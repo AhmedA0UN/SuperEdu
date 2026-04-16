@@ -8,6 +8,23 @@ SuperEdu est organise en trois couches:
 
 Pour un guide de mise en route rapide, voir [setup/SETUP.md](setup/SETUP.md).
 
+## Structure du depot
+
+```text
+SuperEdu/
+├─ backend/                # API Laravel
+├─ node-service/           # Gateway Node.js
+├─ frontend/               # Application React/Vite
+├─ setup/                  # Scripts et guide d'installation
+│  ├─ setup.bat            # Setup Windows (batch)
+│  ├─ setup.sh             # Setup macOS/Linux
+│  ├─ setup.exe            # Setup Windows (executable)
+│  └─ SETUP.md             # Guide de setup
+├─ .github/workflows/
+│  └─ static.yml           # Deploy frontend vers GitHub Pages
+└─ tools/setup-exe/        # Source du lanceur setup.exe
+```
+
 ## Vue d'ensemble
 
 Le frontend React sert d'enveloppe autour des pages historiques stockees dans `frontend/public/super_edu/` et expose les routes suivantes:
