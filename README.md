@@ -71,18 +71,50 @@ Guide de mise en route detaille: [setup/SETUP.md](setup/SETUP.md).
 
 ## Structure du depot
 
+```text
 SuperEdu/
-|-- backend/
-|-- node-service/
-|-- frontend/
-|-- setup/
+|-- .github/
+|   `-- workflows/
+|       `-- static.yml                 # Deploy GitHub Pages (frontend)
+|-- backend/                           # API Laravel
+|   |-- app/
+|   |-- config/
+|   |-- database/
+|   |-- public/
+|   |-- routes/
+|   |-- tests/
+|   |-- artisan
+|   `-- composer.json
+|-- node-service/                      # Gateway Node.js
+|   |-- src/
+|   |   `-- server.js
+|   |-- .env.example
+|   `-- package.json
+|-- frontend/                          # App React/Vite
+|   |-- src/
+|   |   |-- App.jsx
+|   |   `-- main.jsx
+|   |-- public/
+|   |   `-- super_edu/                 # Interfaces legacy conservees
+|   |       |-- index.html
+|   |       `-- Wpages/
+|   |-- vite.config.js
+|   `-- package.json
+|-- setup/                             # Scripts de setup
 |   |-- setup.bat
 |   |-- setup.sh
 |   |-- setup.exe
 |   `-- SETUP.md
-|-- .github/workflows/
-|   `-- static.yml
-`-- tools/setup-exe/
+|-- tools/
+|   `-- setup-exe/                     # Source C# du lanceur setup.exe
+|       |-- Program.cs
+|       `-- SetupLauncher.csproj
+|-- README.md
+|-- setup.exe                          # Lanceur setup Windows (racine)
+|-- LICENSE-GPL-3.0-or-later
+|-- LICENSE-MIT
+`-- LICENSE-APACHE-2.0
+```
 
 ## Demarrage rapide
 
