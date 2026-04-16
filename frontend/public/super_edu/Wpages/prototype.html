@@ -1,0 +1,854 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SuperEdu · Apprendre Vite</title>
+    <link rel="icon" type="image/x-icon" href="src/i3.png">
+    <!-- Font Awesome pour les icônes -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(145deg, #0f172a 0%, #1e293b 100%);
+            color: #e2e8f0;
+            min-height: 100vh;
+            padding-bottom: 120px;
+        }
+
+        .header {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            -webkit-backdrop-filter: blur(12px);
+            backdrop-filter: blur(12px);
+            background: rgba(15, 23, 42, 0.82);
+            border-bottom: 1px solid rgba(56, 189, 248, 0.2);
+            padding: 16px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .logo i {
+            font-size: 28px;
+            color: #38bdf8;
+            filter: drop-shadow(0 0 8px #38bdf880);
+        }
+
+        .logo h1 {
+            font-size: 22px;
+            font-weight: 700;
+            background: linear-gradient(135deg, #ffffff, #7dd3fc);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .logo span {
+            font-weight: 300;
+            font-size: 14px;
+            color: #94a3b8;
+            margin-left: 4px;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 16px;
+        }
+
+        .header-actions i {
+            font-size: 22px;
+            color: #cbd5e1;
+            transition: 0.2s;
+        }
+
+        .header-actions i:hover {
+            color: #38bdf8;
+            cursor: pointer;
+        }
+
+        .search-bar {
+            padding: 18px 20px 6px;
+        }
+
+        .search-container {
+            background: #1e293b;
+            border-radius: 30px;
+            padding: 12px 18px;
+            display: flex;
+            align-items: center;
+            border: 1px solid #334155;
+            -webkit-backdrop-filter: blur(4px);
+            backdrop-filter: blur(4px);
+        }
+
+        .search-container i {
+            color: #38bdf8;
+            margin-right: 12px;
+        }
+
+        .search-container input {
+            background: transparent;
+            border: none;
+            width: 100%;
+            color: white;
+            font-size: 16px;
+            outline: none;
+        }
+
+        .search-container input::placeholder {
+            color: #64748b;
+        }
+
+        .categories {
+            padding: 12px 20px;
+            display: flex;
+            gap: 12px;
+            overflow-x: auto;
+            scrollbar-width: none;
+            white-space: nowrap;
+        }
+
+        .categories::-webkit-scrollbar {
+            display: none;
+        }
+
+        .cat-item {
+            background: #1e293b;
+            padding: 8px 18px;
+            border-radius: 40px;
+            font-size: 14px;
+            font-weight: 500;
+            color: #94a3b8;
+            border: 1px solid #334155;
+            transition: all 0.2s;
+            cursor: pointer;
+        }
+
+        .cat-item i {
+            margin-right: 6px;
+            font-size: 12px;
+        }
+
+        .cat-item.active {
+            background: #38bdf8;
+            color: #0f172a;
+            border-color: #38bdf8;
+            font-weight: 600;
+        }
+
+        .feed-title {
+            padding: 0 20px;
+            margin-top: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .feed-title h3 {
+            font-weight: 600;
+            color: #f1f5f9;
+        }
+
+        .feed-title i {
+            color: #38bdf8;
+        }
+
+        .video-feed {
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+            padding: 16px 20px;
+        }
+
+        .video-card {
+            background: rgba(30, 41, 59, 0.6);
+            -webkit-backdrop-filter: blur(8px);
+            backdrop-filter: blur(8px);
+            border-radius: 28px;
+            padding: 16px;
+            border: 1px solid #334155;
+            box-shadow: 0 20px 30px -10px rgba(0,0,0,0.4);
+            transition: transform 0.2s, border-color 0.2s, box-shadow 0.2s;
+        }
+
+        .video-card:hover {
+            transform: translateY(-4px);
+            border-color: #38bdf8;
+            box-shadow: 0 28px 40px -16px rgba(56,189,248,0.4);
+        }
+
+        .video-thumb {
+            aspect-ratio: 9 / 16;
+            background: #0f172a;
+            border-radius: 20px;
+            margin-bottom: 14px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+            border: 1px solid #38bdf840;
+            box-shadow: inset 0 0 20px #00000055;
+        }
+
+        .thumb-1 { background: linear-gradient(45deg, #1e1b4b, #312e81); }
+        .thumb-2 { background: linear-gradient(45deg, #0f172a, #075985); }
+        .thumb-3 { background: linear-gradient(45deg, #3b0764, #581c87); }
+        .thumb-4 { background: linear-gradient(45deg, #0f172a, #0c4a6e); }
+
+        .play-icon {
+            background: #38bdf8;
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #0f172a;
+            font-size: 24px;
+            box-shadow: 0 0 25px #38bdf8;
+        }
+
+        .video-badge {
+            position: absolute;
+            bottom: 12px;
+            left: 12px;
+            background: #0f172acc;
+            -webkit-backdrop-filter: blur(4px);
+            backdrop-filter: blur(4px);
+            padding: 4px 12px;
+            border-radius: 30px;
+            font-size: 12px;
+            color: #bae6fd;
+            border: 1px solid #38bdf850;
+        }
+
+        .video-duration {
+            position: absolute;
+            bottom: 12px;
+            right: 12px;
+            background: #00000099;
+            padding: 4px 8px;
+            border-radius: 8px;
+            font-size: 12px;
+        }
+
+        .video-info {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+        }
+
+        .avatar {
+            background: #38bdf8;
+            width: 44px;
+            height: 44px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: #0f172a;
+            font-size: 18px;
+        }
+
+        .video-text {
+            flex: 1;
+        }
+
+        .video-text h4 {
+            font-weight: 600;
+            font-size: 16px;
+            margin-bottom: 4px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .verified {
+            color: #38bdf8;
+            font-size: 12px;
+        }
+
+        .desc {
+            color: #94a3b8;
+            font-size: 14px;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .tag {
+            background: #1e293b;
+            color: #7dd3fc;
+            padding: 2px 10px;
+            border-radius: 20px;
+            font-size: 10px;
+            font-weight: 500;
+        }
+
+        .video-actions {
+            display: flex;
+            gap: 24px;
+            margin-top: 8px;
+            color: #94a3b8;
+        }
+
+        .video-actions i {
+            margin-right: 6px;
+            cursor: pointer;
+        }
+
+        .video-actions span:hover, .video-actions i:hover {
+            color: #38bdf8;
+        }
+
+        .bottom-actions {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            right: 20px;
+            display: flex;
+            gap: 12px;
+            z-index: 200;
+        }
+
+        .ai-chat-button {
+            background: #0f172a;
+            border: 1.5px solid #38bdf8;
+            border-radius: 60px;
+            padding: 14px 24px;
+            flex: 2;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            -webkit-backdrop-filter: blur(20px);
+            backdrop-filter: blur(20px);
+            background: rgba(15, 23, 42, 0.8);
+            box-shadow: 0 10px 30px #00000080, 0 0 20px #38bdf840;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .ai-chat-button:hover {
+            background: #1e293b;
+            border-color: #7dd3fc;
+        }
+
+        .ai-chat-button i {
+            color: #38bdf8;
+            font-size: 22px;
+            animation: pulse 2s infinite;
+        }
+
+        .ai-chat-button .text {
+            color: white;
+            font-weight: 500;
+        }
+
+        .ai-chat-button .small {
+            font-size: 12px;
+            color: #94a3b8;
+        }
+
+        .collab-psy-buttons {
+            display: flex;
+            gap: 8px;
+            flex: 1;
+        }
+
+        .icon-btn {
+            background: #1e293bcc;
+            -webkit-backdrop-filter: blur(10px);
+            backdrop-filter: blur(10px);
+            border: 1px solid #475569;
+            border-radius: 50px;
+            padding: 0 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            color: #e2e8f0;
+            font-size: 14px;
+            cursor: pointer;
+            transition: 0.2s;
+            white-space: nowrap;
+        }
+
+        .icon-btn i {
+            color: #38bdf8;
+        }
+
+        .ai-panel {
+            position: fixed;
+            bottom: 100px;
+            left: 20px;
+            right: 20px;
+            background: #0f172aee;
+            -webkit-backdrop-filter: blur(20px);
+            backdrop-filter: blur(20px);
+            border-radius: 32px;
+            padding: 20px;
+            border: 1px solid #38bdf8;
+            box-shadow: 0 20px 40px #000000;
+            z-index: 300;
+            display: none;
+            max-height: 420px;
+            overflow-y: auto;
+        }
+
+        .ai-panel.active {
+            display: block;
+        }
+
+        .ai-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .ai-header i {
+            background: #38bdf8;
+            padding: 12px;
+            border-radius: 20px;
+            color: #0f172a;
+            font-size: 20px;
+        }
+
+        .ai-header h3 {
+            color: white;
+            font-weight: 600;
+        }
+
+        .ai-message {
+            background: #1e293b;
+            padding: 14px;
+            border-radius: 20px 20px 20px 4px;
+            margin-bottom: 16px;
+            color: #e2e8f0;
+        }
+
+        .ai-actions {
+            display: flex;
+            gap: 12px;
+            margin-top: 12px;
+        }
+
+        .ai-btn {
+            background: #334155;
+            border: none;
+            color: white;
+            padding: 12px 16px;
+            border-radius: 40px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: 0.2s;
+            flex: 1;
+            text-align: center;
+        }
+
+        .ai-btn.primary {
+            background: #38bdf8;
+            color: #0f172a;
+            font-weight: 600;
+        }
+
+        .close-ai {
+            margin-left: auto;
+            color: #94a3b8;
+            cursor: pointer;
+        }
+
+        .ai-replies {
+            display: grid;
+            gap: 12px;
+            margin-top: 16px;
+        }
+
+        .ai-bubble {
+            padding: 14px 18px;
+            border-radius: 24px;
+            line-height: 1.6;
+            font-size: 14px;
+        }
+
+        .ai-bubble.user {
+            background: #38bdf8;
+            color: #0f172a;
+            justify-self: end;
+        }
+
+        .ai-bubble.bot {
+            background: #1e293b;
+            color: #e2e8f0;
+        }
+
+        .ai-input-group {
+            display: flex;
+            gap: 8px;
+            margin-top: 16px;
+        }
+
+        .ai-input-group input {
+            flex: 1;
+            background: #1e293b;
+            border: 1px solid #38bdf8;
+            border-radius: 30px;
+            padding: 12px 16px;
+            color: white;
+            outline: none;
+        }
+
+        .ai-input-group button {
+            background: #38bdf8;
+            border: none;
+            border-radius: 30px;
+            padding: 0 20px;
+            color: #0f172a;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        @keyframes pulse {
+            0% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.6; transform: scale(1.05); }
+            100% { opacity: 1; transform: scale(1); }
+        }
+
+        @media (min-width: 640px) {
+            .video-feed {
+                max-width: 720px;
+                margin: 0 auto;
+            }
+            body {
+                padding-left: 10px;
+                padding-right: 10px;
+            }
+        }
+
+        .credit {
+            text-align: center;
+            margin: 30px 0 10px;
+            color: #94a3b8;
+            font-size: 12px;
+        }
+
+        .feed-title i {
+            margin-right: 6px;
+        }
+
+        .ai-message span {
+            font-size: 14px;
+            color: #a5f3fc;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <div class="logo">
+            <i class="fas fa-graduation-cap"></i>
+            <h1>SuperEdu <span>BestLearning</span></h1>
+        </div>
+        <div class="header-actions">
+            <i class="far fa-bell"></i>
+            <i class="far fa-user-circle"></i>
+        </div>
+    </div>
+
+    <div class="search-bar">
+        <div class="search-container">
+            <i class="fas fa-search"></i>
+            <input type="text" id="searchInput" placeholder="Rechercher cours, vidéo, compétence...">
+        </div>
+    </div>
+
+    <div class="categories">
+        <div class="cat-item active" data-filter="all"><i class="fas fa-fire"></i> Pour toi</div>
+        <div class="cat-item" data-filter="dev"><i class="fas fa-code"></i> Dev Avancé</div>
+        <div class="cat-item" data-filter="economie"><i class="fas fa-chart-line"></i> Macroéconomie</div>
+        <div class="cat-item" data-filter="critique"><i class="fas fa-brain"></i> Pensée Critique</div>
+        <div class="cat-item" data-filter="leadership"><i class="fas fa-users"></i> Leadership</div>
+        <div class="cat-item" data-filter="pedagogie"><i class="fas fa-chalkboard-user"></i> Pédagogie</div>
+        <div class="cat-item" data-filter="bienetre"><i class="fas fa-heart"></i> Bien-être</div>
+    </div>
+
+    <div class="feed-title">
+        <h3><i class="fas fa-video"></i> Vidéos courtes · SuperShorts</h3>
+        <i class="fas fa-sliders-h"></i>
+    </div>
+
+    <div class="video-feed" id="videoFeed">
+        <div class="video-card" data-keywords="pattern MVC architecture programme" data-category="dev">
+            <div class="video-thumb thumb-1">
+                <div class="play-icon"><i class="fas fa-play"></i></div>
+                <div class="video-badge"><i class="far fa-clock"></i> Expli'Flash</div>
+                <div class="video-duration">1:42</div>
+            </div>
+            <div class="video-info">
+                <div class="avatar">DK</div>
+                <div class="video-text">
+                    <h4>Dr. Karim <i class="fas fa-check-circle verified"></i></h4>
+                    <div class="desc">
+                        <span>Pattern MVC en 90s</span>
+                        <span class="tag">Architecture</span>
+                    </div>
+                    <div class="video-actions">
+                        <span><i class="far fa-heart"></i> 234</span>
+                        <span><i class="far fa-comment-dots"></i> 18</span>
+                        <span><i class="far fa-bookmark"></i> Sauver</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="video-card" data-keywords="élasticité microéconomie offre demande" data-category="economie">
+            <div class="video-thumb thumb-2">
+                <div class="play-icon"><i class="fas fa-play"></i></div>
+                <div class="video-badge"><i class="fas fa-briefcase"></i> UseCase Réel</div>
+                <div class="video-duration">2:05</div>
+            </div>
+            <div class="video-info">
+                <div class="avatar">SL</div>
+                <div class="video-text">
+                    <h4>Mme Salma <i class="fas fa-check-circle verified"></i></h4>
+                    <div class="desc">
+                        <span>Offre & Demande (Élasticité)</span>
+                        <span class="tag">Microéconomie</span>
+                    </div>
+                    <div class="video-actions">
+                        <span><i class="far fa-heart"></i> 412</span>
+                        <span><i class="far fa-comment-dots"></i> 27</span>
+                        <span><i class="far fa-bookmark"></i> Sauver</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="video-card" data-keywords="gestion conflit équipe projet soft skills" data-category="leadership">
+            <div class="video-thumb thumb-3">
+                <div class="play-icon"><i class="fas fa-play"></i></div>
+                <div class="video-badge"><i class="fas fa-user-tie"></i> Leadership</div>
+                <div class="video-duration">1:58</div>
+            </div>
+            <div class="video-info">
+                <div class="avatar">NR</div>
+                <div class="video-text">
+                    <h4>Nadia R. <i class="fas fa-check-circle verified"></i></h4>
+                    <div class="desc">
+                        <span>Gestion conflits en équipe projet</span>
+                        <span class="tag">Soft Skills</span>
+                    </div>
+                    <div class="video-actions">
+                        <span><i class="far fa-heart"></i> 189</span>
+                        <span><i class="far fa-comment-dots"></i> 12</span>
+                        <span><i class="far fa-bookmark"></i> Sauver</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="video-card" data-keywords="mindfulness stress bien-être études" data-category="bienetre">
+            <div class="video-thumb thumb-4">
+                <div class="play-icon"><i class="fas fa-play"></i></div>
+                <div class="video-badge"><i class="fas fa-heart"></i> Bien-être</div>
+                <div class="video-duration">1:30</div>
+            </div>
+            <div class="video-info">
+                <div class="avatar">AM</div>
+                <div class="video-text">
+                    <h4>Amel M. <i class="fas fa-check-circle verified"></i></h4>
+                    <div class="desc">
+                        <span>Mini pause mindfulness</span>
+                        <span class="tag">Bien-être</span>
+                    </div>
+                    <div class="video-actions">
+                        <span><i class="far fa-heart"></i> 301</span>
+                        <span><i class="far fa-comment-dots"></i> 32</span>
+                        <span><i class="far fa-bookmark"></i> Sauver</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="bottom-actions">
+        <div class="ai-chat-button" id="toggleAiBtn">
+            <i class="fas fa-robot"></i>
+            <div class="text">
+                SuperBot IA <br>
+                <span class="small">Explique-moi ce cours...</span>
+            </div>
+        </div>
+        <div class="collab-psy-buttons">
+            <div class="icon-btn" id="collabBtn">
+                <i class="fas fa-users"></i> Collab
+            </div>
+            <div class="icon-btn" id="psyBtn">
+                <i class="fas fa-hand-holding-heart"></i> Psy
+            </div>
+        </div>
+    </div>
+
+    <div class="ai-panel" id="aiPanel">
+        <div class="ai-header">
+            <i class="fas fa-brain"></i>
+            <h3>SuperBot · Assistant</h3>
+            <div class="close-ai" id="closeAi"><i class="fas fa-times"></i></div>
+        </div>
+        <div class="ai-message">
+            <strong><i class="fas fa-graduation-cap"></i> Bonjour !</strong> Je suis ton tuteur IA. Que souhaites-tu réviser ?<br>
+            <span>💡 Ex: "Explique les pointeurs en C", "Aide mémoire macroéconomie", "Fiche révision gestion de projet".</span>
+        </div>
+        <div class="ai-actions">
+            <div class="ai-btn" id="explainPointersBtn">
+                <i class="fas fa-code"></i> Explique Pointeurs
+            </div>
+            <div class="ai-btn primary" id="revisionSheetBtn">
+                <i class="fas fa-file-alt"></i> Fiche Révision
+            </div>
+        </div>
+        <div class="ai-replies" id="aiReplies"></div>
+        <div class="ai-input-group">
+            <input type="text" id="aiInput" placeholder="Écris ta question...">
+            <button id="aiSend"><i class="fas fa-paper-plane"></i></button>
+        </div>
+    </div>
+
+    <div class="credit">
+        SuperEdu · prototype — amélioration continue avec IA
+    </div>
+
+    <script>
+        (function(){
+            const aiPanel = document.getElementById('aiPanel');
+            const toggleBtn = document.getElementById('toggleAiBtn');
+            const closeAi = document.getElementById('closeAi');
+            const collabBtn = document.getElementById('collabBtn');
+            const psyBtn = document.getElementById('psyBtn');
+            const searchInput = document.getElementById('searchInput');
+            const categoryItems = document.querySelectorAll('.cat-item');
+            const videoCards = document.querySelectorAll('.video-card');
+            const explainPointersBtn = document.getElementById('explainPointersBtn');
+            const revisionSheetBtn = document.getElementById('revisionSheetBtn');
+            const aiSend = document.getElementById('aiSend');
+            const aiInput = document.getElementById('aiInput');
+            const aiReplies = document.getElementById('aiReplies');
+
+            toggleBtn.addEventListener('click', function(e){
+                e.stopPropagation();
+                aiPanel.classList.toggle('active');
+            });
+
+            closeAi.addEventListener('click', function(){
+                aiPanel.classList.remove('active');
+            });
+
+            document.addEventListener('click', function(event) {
+                if (!aiPanel.contains(event.target) && !toggleBtn.contains(event.target)) {
+                    aiPanel.classList.remove('active');
+                }
+            });
+
+            collabBtn.addEventListener('click', function(){
+                alert("🚀 Espace Collaboration \n\n• 3 étudiants révisent 'Algo Avancé'\n• 1 enseignant en ligne pour Q/R\n• Tableau blanc partagé disponible.\n\n[Simulation prototype]");
+            });
+
+            psyBtn.addEventListener('click', function(){
+                alert("🧠 Espace Bien-être & Psychologue\n\n• Prochain créneau avec Mme Ben Salem : aujourd'hui 16h\n• Séance collective 'Gestion du stress' ce soir.\n• Ressources mindfulness disponibles.\n\n[Prototype]");
+            });
+
+            categoryItems.forEach(cat => {
+                cat.addEventListener('click', function(){
+                    categoryItems.forEach(c => c.classList.remove('active'));
+                    this.classList.add('active');
+                    filterFeed();
+                });
+            });
+
+            searchInput.addEventListener('input', filterFeed);
+
+            function filterFeed() {
+                const query = searchInput.value.trim().toLowerCase();
+                const activeCategory = document.querySelector('.cat-item.active').dataset.filter;
+
+                videoCards.forEach(card => {
+                    const keywords = card.dataset.keywords.toLowerCase();
+                    const category = card.dataset.category;
+                    const matchesQuery = !query || keywords.includes(query);
+                    const matchesCategory = activeCategory === 'all' || category === activeCategory;
+                    card.style.display = matchesQuery && matchesCategory ? 'block' : 'none';
+                });
+            }
+
+            const hearts = document.querySelectorAll('.video-actions .fa-heart');
+            hearts.forEach(h => {
+                h.addEventListener('click', function(e){
+                    e.stopPropagation();
+                    this.classList.toggle('far');
+                    this.classList.toggle('fas');
+                    this.style.color = this.classList.contains('fas') ? '#ef4444' : '';
+                });
+            });
+
+            function addAiBubble(text, sender) {
+                const bubble = document.createElement('div');
+                bubble.className = `ai-bubble ${sender}`;
+                bubble.textContent = text;
+                aiReplies.appendChild(bubble);
+                aiReplies.scrollTop = aiReplies.scrollHeight;
+            }
+
+            explainPointersBtn.addEventListener('click', function(){
+                addAiBubble('Explique-moi les pointeurs en C', 'user');
+                setTimeout(() => {
+                    addAiBubble('Les pointeurs en C stockent l’adresse d’une variable. Ils permettent de manipuler directement la mémoire et de créer des structures dynamiques comme les tableaux et les listes liées.', 'bot');
+                }, 300);
+            });
+
+            revisionSheetBtn.addEventListener('click', function(){
+                addAiBubble('Prépare une fiche de révision rapide', 'user');
+                setTimeout(() => {
+                    addAiBubble('Fiche de révision : 1) Concepts clés, 2) Formules importantes, 3) Conseils d’application, 4) Quiz express. Prêt à l’utiliser en 2 min.', 'bot');
+                }, 300);
+            });
+
+            aiSend.addEventListener('click', function(){
+                const question = aiInput.value.trim();
+                if (!question) return;
+                addAiBubble(question, 'user');
+                aiInput.value = '';
+                setTimeout(() => {
+                    addAiBubble('SuperBot réfléchit… Voici une réponse claire à ta question : ' + question, 'bot');
+                }, 400);
+            });
+
+            aiInput.addEventListener('keydown', function(event) {
+                if (event.key === 'Enter') {
+                    event.preventDefault();
+                    aiSend.click();
+                }
+            });
+
+        })();
+    </script>
+</body>
+</html>

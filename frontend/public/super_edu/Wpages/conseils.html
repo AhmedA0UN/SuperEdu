@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Plan d'amélioration pédagogique</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 30px; background: #f9f9f9; }
+    h1 { color: #2c3e50; }
+    h2 { color: #34495e; }
+    section { background: #ffffff; padding: 20px; margin-bottom: 20px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+    ul { margin-left: 20px; }
+  </style>
+</head>
+<body>
+  <h1>Axes d'amélioration pédagogique</h1>
+
+  <section>
+    <h2>📘 Intégration des projets dans les TPs</h2>
+    <ul>
+      <li>Relier les projets suivis par les enseignants aux séances pratiques via SuperEdu.</li>
+      <li>Inclure une partie appliquée connectée à un projet réel dans chaque TP.</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>🎯 Séances personnalisées (Self-learning)</h2>
+    <ul>
+      <li>Allouer certaines séances à l’auto-apprentissage guidé.</li>
+      <li>Mettre à disposition des ressources numériques (vidéos, tutoriels, labs virtuels).</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>📝 Nouvelle méthode d’évaluation</h2>
+    <ul>
+      <li>Remplacer les examens purement théoriques par des évaluations basées sur la résolution de problèmes réels.</li>
+      <li>Encourager les projets collaboratifs et les études de cas.</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>🏭 Simulations industrielles</h2>
+    <ul>
+      <li>Organiser des visites virtuelles ou des simulations immersives de milieux industriels.</li>
+      <li>Utiliser la réalité virtuelle ou des vidéos interactives pour montrer les processus.</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>🔄 Adaptation du plan d’étude</h2>
+    <ul>
+      <li>Réviser le plan d’étude tous les 3 ans pour suivre l’évolution rapide du domaine informatique.</li>
+      <li>Intégrer les nouvelles tendances (cloud-native, IA, cybersécurité, DevOps).</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>💡 Suggestions</h2>
+    <p>Partage une idée ou une amélioration pour le parcours pédagogique :</p>
+    <textarea id="suggestionText" placeholder="Écris ton idée ici..." style="width:100%; min-height:120px; padding:14px; border:1px solid #d1d5db; border-radius:12px; font-size:15px; resize:vertical;"></textarea>
+    <button id="submitSuggestion" style="margin-top:14px; padding:12px 22px; background:#1d4ed8; color:white; border:none; border-radius:999px; cursor:pointer; font-size:15px;">Envoyer la suggestion</button>
+    <p id="suggestionConfirmation" style="display:none; margin-top:14px; color:#065f46; font-weight:600;"></p>
+  </section>
+
+  <script>
+    document.getElementById('submitSuggestion').addEventListener('click', function() {
+      const text = document.getElementById('suggestionText').value.trim();
+      const confirmation = document.getElementById('suggestionConfirmation');
+      if (!text) {
+        confirmation.style.display = 'block';
+        confirmation.style.color = '#b91c1c';
+        confirmation.textContent = 'Merci de saisir une suggestion avant d’envoyer.';
+        return;
+      }
+      confirmation.style.display = 'block';
+      confirmation.style.color = '#065f46';
+      confirmation.textContent = 'Suggestion envoyée ! Merci pour votre contribution.';
+      document.getElementById('suggestionText').value = '';
+    });
+  </script>
+

@@ -1,0 +1,902 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SuperEdu · Plateforme Complète</title>
+    <link rel="icon" type="image/x-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎓</text></svg>">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        /* ===== VARIABLES & RESET ===== */
+        :root {
+            --primary: #0f172a;
+            --secondary: #1e293b;
+            --accent: #38bdf8;
+            --accent-light: #7dd3fc;
+            --accent-purple: #a78bfa;
+            --success: #22c55e;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --text-primary: #0f172a;
+            --text-secondary: #475569;
+            --text-muted: #64748b;
+            --bg-primary: #f8fafc;
+            --bg-secondary: #f1f5f9;
+            --border-light: #e2e8f0;
+            --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+            --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+            --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1);
+            --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1);
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background: var(--bg-primary); color: var(--text-primary); line-height: 1.6; overflow-x: hidden; }
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: var(--bg-secondary); }
+        ::-webkit-scrollbar-thumb { background: var(--text-muted); border-radius: 4px; }
+        .app-wrapper { display: flex; min-height: 100vh; }
+        
+        /* ===== SIDEBAR ===== */
+        .sidebar {
+            width: 280px;
+            background: linear-gradient(165deg, #0b1120 0%, #111827 100%);
+            color: #e2e8f0;
+            padding: 24px 16px;
+            display: flex;
+            flex-direction: column;
+            position: fixed;
+            height: 100vh;
+            overflow-y: auto;
+            border-right: 1px solid rgba(56, 189, 248, 0.1);
+            z-index: 100;
+            box-shadow: var(--shadow-xl);
+        }
+        .logo-section { padding: 0 12px 24px; border-bottom: 1px solid rgba(56, 189, 248, 0.15); position: relative; }
+        .logo-section::after { content: ''; position: absolute; bottom: -1px; left: 0; width: 60px; height: 3px; background: linear-gradient(90deg, var(--accent), var(--accent-purple)); border-radius: 3px; }
+        .logo-main { display: flex; align-items: center; gap: 14px; margin-bottom: 16px; }
+        .logo-icon { background: linear-gradient(135deg, var(--accent), var(--accent-purple)); width: 52px; height: 52px; border-radius: 16px; display: flex; align-items: center; justify-content: center; font-size: 28px; box-shadow: 0 8px 20px -4px rgba(56, 189, 248, 0.4); }
+        .logo-text h2 { font-size: 24px; font-weight: 800; background: linear-gradient(135deg, #ffffff, #bae6fd); -webkit-background-clip: text; background-clip: text; color: transparent; }
+        .logo-text span { font-size: 11px; color: var(--text-muted); }
+        .progress-overview { background: rgba(30, 41, 59, 0.5); border-radius: 16px; padding: 16px; margin-top: 16px; }
+        .progress-header { display: flex; justify-content: space-between; margin-bottom: 12px; font-size: 13px; }
+        .progress-bar { height: 6px; background: var(--secondary); border-radius: 3px; overflow: hidden; }
+        .progress-fill { height: 100%; width: 68%; background: linear-gradient(90deg, var(--accent), var(--accent-purple)); border-radius: 3px; }
+        .nav-menu { flex: 1; padding: 20px 4px; }
+        .nav-section-title { font-size: 10px; text-transform: uppercase; letter-spacing: 2px; color: var(--text-muted); margin: 24px 0 12px 16px; font-weight: 700; display: flex; align-items: center; gap: 8px; }
+        .nav-item { display: flex; align-items: center; gap: 14px; padding: 12px 16px; margin: 4px 0; border-radius: 14px; color: #94a3b8; font-weight: 500; font-size: 14px; transition: var(--transition); cursor: pointer; border: none; background: transparent; width: 100%; text-align: left; }
+        .nav-item:hover { background: var(--secondary); color: #e2e8f0; transform: translateX(4px); }
+        .nav-item:hover i { color: var(--accent); }
+        .nav-item.active { background: linear-gradient(135deg, rgba(56, 189, 248, 0.15), rgba(167, 139, 250, 0.1)); color: var(--accent); border-left: 3px solid var(--accent); font-weight: 600; }
+        .badge-new { margin-left: auto; background: var(--accent); color: var(--primary); padding: 2px 8px; border-radius: 20px; font-size: 9px; font-weight: 700; }
+        .user-profile-mini { padding: 20px 12px; border-top: 1px solid rgba(56, 189, 248, 0.15); display: flex; align-items: center; gap: 14px; margin-top: auto; }
+        .user-avatar { width: 48px; height: 48px; background: linear-gradient(135deg, var(--accent), var(--accent-purple)); border-radius: 14px; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 18px; color: white; position: relative; }
+        .user-avatar::after { content: ''; position: absolute; bottom: -2px; right: -2px; width: 12px; height: 12px; background: var(--success); border: 2px solid var(--primary); border-radius: 50%; }
+        .user-info h4 { color: white; font-size: 15px; font-weight: 600; }
+        .user-info p { color: var(--text-muted); font-size: 11px; }
+        
+        /* ===== MAIN CONTENT ===== */
+        .main-content { flex: 1; margin-left: 280px; padding: 28px 36px; min-height: 100vh; background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); }
+        .content-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 32px; flex-wrap: wrap; gap: 16px; }
+        .page-title h1 { font-size: 32px; font-weight: 800; display: flex; align-items: center; gap: 12px; }
+        .page-title h1 i { color: var(--accent); }
+        .page-title p { color: var(--text-secondary); font-size: 14px; }
+        .page-container { display: none; animation: fadeIn 0.3s ease; }
+        .page-container.active-page { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        
+        /* ===== STATS CARDS ===== */
+        .quick-stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; margin-bottom: 32px; }
+        .stat-card { background: white; padding: 20px; border-radius: 20px; box-shadow: var(--shadow-sm); border: 1px solid var(--border-light); transition: var(--transition); }
+        .stat-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-lg); }
+        .stat-value { font-size: 28px; font-weight: 800; color: var(--text-primary); }
+        .stat-label { color: var(--text-muted); font-size: 13px; font-weight: 500; }
+        .stat-icon { width: 45px; height: 45px; background: #eef2ff; border-radius: 14px; display: flex; align-items: center; justify-content: center; color: var(--accent); font-size: 22px; }
+        
+        /* ===== AUTH STYLES ===== */
+        .auth-container { background: white; border-radius: 32px; padding: 40px; box-shadow: var(--shadow-xl); max-width: 500px; margin: 40px auto; }
+        .auth-tabs { display: flex; gap: 16px; margin-bottom: 32px; border-bottom: 2px solid var(--border-light); }
+        .auth-tab { padding: 12px 24px; font-size: 18px; font-weight: 600; cursor: pointer; color: var(--text-muted); background: transparent; border: none; transition: var(--transition); }
+        .auth-tab.active { color: var(--accent); border-bottom: 3px solid var(--accent); }
+        .auth-form { display: none; flex-direction: column; gap: 20px; }
+        .auth-form.active-form { display: flex; }
+        .input-group { display: flex; flex-direction: column; gap: 8px; }
+        .input-group label { font-weight: 600; color: var(--text-secondary); font-size: 14px; }
+        .input-group input, .input-group select { padding: 14px 18px; border: 1px solid var(--border-light); border-radius: 16px; font-size: 15px; transition: var(--transition); background: white; }
+        .input-group input:focus, .input-group select:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px rgba(56,189,248,0.1); }
+        .btn-block { width: 100%; padding: 14px; border-radius: 40px; font-weight: 700; font-size: 16px; cursor: pointer; transition: var(--transition); border: none; background: var(--primary); color: white; }
+        .btn-block:hover { background: var(--accent); color: var(--primary); transform: scale(1.02); }
+        .btn-secondary { background: var(--bg-secondary); color: var(--text-primary); border: 1px solid var(--border-light); padding: 10px 20px; border-radius: 40px; font-weight: 600; cursor: pointer; transition: var(--transition); }
+        .logout-btn { background: rgba(239,68,68,0.1); color: var(--danger); border: 1px solid var(--danger); padding: 8px 20px; border-radius: 40px; font-weight: 600; cursor: pointer; }
+        .logout-btn:hover { background: var(--danger); color: white; }
+        
+        /* ===== PARENT DASHBOARD ===== */
+        .parent-dashboard { max-width: 1200px; margin: 0 auto; }
+        .parent-child-card { background: white; border-radius: 24px; padding: 24px; margin-bottom: 24px; border: 1px solid var(--border-light); transition: var(--transition); box-shadow: var(--shadow-sm); }
+        .parent-child-card:hover { box-shadow: var(--shadow-lg); transform: translateY(-2px); }
+        .progress-parent { margin: 20px 0; }
+        .progress-bar-parent { height: 8px; background: var(--border-light); border-radius: 10px; overflow: hidden; }
+        .progress-fill-parent { height: 100%; background: linear-gradient(90deg, var(--accent), var(--accent-purple)); width: 0%; border-radius: 10px; }
+        .grid-2cols { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; margin-top: 20px; }
+        .info-chip { background: var(--bg-primary); padding: 14px; border-radius: 18px; display: flex; align-items: center; gap: 14px; border: 1px solid var(--border-light); }
+        .info-chip i { font-size: 28px; color: var(--accent); }
+        
+        /* ===== VIDEO & RESOURCE CARDS ===== */
+        .video-grid { display: flex; flex-direction: column; gap: 16px; }
+        .video-card { display: flex; gap: 20px; padding: 20px; background: white; border-radius: 20px; border: 1px solid var(--border-light); transition: var(--transition); cursor: pointer; }
+        .video-card:hover { box-shadow: var(--shadow-lg); transform: translateX(6px); }
+        .video-thumbnail { width: 140px; height: 100px; background: linear-gradient(135deg, var(--secondary), var(--primary)); border-radius: 16px; display: flex; align-items: center; justify-content: center; position: relative; flex-shrink: 0; }
+        .play-btn { width: 45px; height: 45px; background: var(--accent); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: var(--primary); font-size: 18px; }
+        .video-title { font-weight: 700; font-size: 18px; margin-bottom: 6px; }
+        .category-badge { background: linear-gradient(135deg, #dbeafe, #e0e7ff); padding: 4px 12px; border-radius: 30px; font-size: 11px; font-weight: 700; color: #1e40af; display: inline-block; }
+        .resource-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 24px; margin-top: 24px; }
+        .resource-card { background: white; border-radius: 24px; padding: 24px; border: 1px solid var(--border-light); transition: var(--transition); }
+        .resource-card:hover { box-shadow: var(--shadow-xl); transform: translateY(-4px); }
+        .widget { background: white; border-radius: 24px; padding: 24px; box-shadow: var(--shadow-sm); border: 1px solid var(--border-light); margin-bottom: 24px; }
+        .widget-title { font-weight: 700; font-size: 18px; margin-bottom: 20px; display: flex; align-items: center; gap: 10px; }
+        .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.7); -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px); display: none; justify-content: center; align-items: center; z-index: 1000; }
+        .modal-overlay.active { display: flex; }
+        .modal { background: white; border-radius: 28px; padding: 32px; max-width: 400px; width: 90%; }
+        .modal-close { width: 36px; height: 36px; border-radius: 50%; background: var(--bg-secondary); border: none; cursor: pointer; }
+        
+        @media (max-width: 1000px) { .sidebar { width: 80px; } .logo-text, .nav-item span, .user-info, .nav-section-title, .progress-overview { display: none; } .main-content { margin-left: 80px; } .quick-stats { grid-template-columns: repeat(2,1fr); } }
+        @media (max-width: 600px) { .quick-stats { grid-template-columns: 1fr; } .grid-2cols { grid-template-columns: 1fr; } }
+
+        .login-hints {
+            text-align: center;
+            font-size: 13px;
+            margin-top: 16px;
+        }
+
+        .category-header {
+            background: var(--primary);
+            border-radius: 28px;
+            padding: 32px;
+            color: white;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .btn-margin-top {
+            margin-top: 16px;
+        }
+    </style>
+</head>
+<body>
+<div class="app-wrapper">
+    <!-- SIDEBAR -->
+    <div class="sidebar">
+        <div class="logo-section">
+            <div class="logo-main"><div class="logo-icon"><i class="fas fa-graduation-cap"></i></div><div class="logo-text"><a href="mentor IA.html"><h2>SuperEdu</h2></a><span>BestLearning · Excellence</span></div></div>
+            <div class="progress-overview"><div class="progress-header"><span>Progression</span><span>68%</span></div><div class="progress-bar"><div class="progress-fill"></div></div></div>
+        </div>
+        <div class="nav-menu">
+            <div class="nav-section-title"><i class="fas fa-star"></i><span>Principal</span></div>
+            <button class="nav-item" data-page="pour-toi"><i class="fas fa-fire"></i><span>Pour Toi</span></button>
+            <button class="nav-item" data-page="videos"><i class="fas fa-video"></i><span>Vidéos</span><span class="badge-new">New</span></button>
+            <div class="nav-section-title"><i class="fas fa-crown"></i><span>Domaines</span></div>
+            <button class="nav-item" data-page="dev-avance"><i class="fas fa-code"></i><span>Dev Avancé</span></button>
+            <button class="nav-item" data-page="micro-macro"><i class="fas fa-chart-line"></i><span>Micro & Macro</span></button>
+            <button class="nav-item" data-page="pensee-critique"><i class="fas fa-brain"></i><span>Pensée Critique</span></button>
+            <button class="nav-item" data-page="leadership"><i class="fas fa-crown"></i><span>Leadership</span></button>
+            <button class="nav-item" data-page="entrepreneuriat"><i class="fas fa-rocket"></i><span>Entrepreneuriat</span></button>
+            <div class="nav-section-title"><i class="fas fa-heart"></i><span>Famille</span></div>
+            <button class="nav-item" data-page="parent-space"><i class="fas fa-chalkboard-user"></i><span>Espace Parent</span></button>
+            <button class="nav-item" data-page="teacher-space"><i class="fas fa-chalkboard-teacher"></i><span>Espace Enseignant</span></button>
+            <button class="nav-item" data-page="eleve-secondaire"><i class="fas fa-school"></i><span>Élèves Secondaire</span></button>
+            <button class="nav-item" data-page="psychologue"><i class="fas fa-hand-holding-heart"></i><span>Bien-être</span></button>
+        </div>
+        <div class="user-profile-mini" id="sidebarUser"><div class="user-avatar">👤</div><div class="user-info"><h4>Invite</h4><p>Connectez-vous</p></div></div>
+    </div>
+
+    <div class="main-content">
+        <!-- PAGE AUTHENTIFICATION -->
+        <div class="page-container active-page" id="page-auth">
+            <div class="auth-container">
+                <div class="auth-tabs">
+                    <button class="auth-tab active" data-auth="login">🔐 Connexion</button>
+                    <button class="auth-tab" data-auth="register">📝 Inscription</button>
+                </div>
+                <div class="auth-form active-form" id="loginForm">
+                    <div class="input-group"><label>Email</label><input type="email" id="loginEmail" placeholder="exemple@edu.com"></div>
+                    <div class="input-group"><label>Mot de passe</label><input type="password" id="loginPassword" placeholder="••••••"></div>
+                    <button class="btn-block" id="doLoginBtn"><i class="fas fa-arrow-right-to-bracket"></i> Se connecter</button>
+                    <p class="login-hints">👨‍👩‍👧 Parent: parent@edu.com / parent123<br>👨‍🎓 Étudiant: etudiant@edu.com / 123456<br>👨‍🏫 Enseignant: enseignant@edu.com / enseignant123</p>
+                </div>
+                <div class="auth-form" id="registerForm">
+                    <div class="input-group"><label>Nom complet</label><input type="text" id="regName" placeholder="Votre nom"></div>
+                    <div class="input-group"><label>Email</label><input type="email" id="regEmail" placeholder="email@edu.com"></div>
+                    <div class="input-group"><label>Rôle</label><select id="regRole"><option value="etudiant">Étudiant</option><option value="parent">Parent / Tuteur</option><option value="enseignant">Enseignant</option><option value="eleve">Élève du secondaire</option></select></div>
+                    <div class="input-group"><label>Mot de passe</label><input type="password" id="regPassword" placeholder="Min. 6 caractères"></div>
+                    <button class="btn-block" id="doRegisterBtn"><i class="fas fa-user-plus"></i> Créer mon compte</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- ESPACE PARENT (suivi des enfants) -->
+        <div class="page-container" id="page-parent-space">
+            <div class="content-header">
+                <div class="page-title"><h1><i class="fas fa-chalkboard-user"></i> Suivi Parental</h1><p>Progression académique de vos enfants</p></div>
+                <button class="logout-btn" id="parentLogoutBtn"><i class="fas fa-sign-out-alt"></i> Déconnexion</button>
+            </div>
+            <div id="parentDashboardContainer" class="parent-dashboard"></div>
+        </div>
+
+        <!-- ESPACE ENSEIGNANT -->
+        <div class="page-container" id="page-teacher-space">
+            <div class="content-header">
+                <div class="page-title"><h1><i class="fas fa-chalkboard-teacher"></i> Espace Enseignant</h1><p>Gestion des cours et étudiants</p></div>
+                <button class="logout-btn" id="teacherLogoutBtn"><i class="fas fa-sign-out-alt"></i> Déconnexion</button>
+            </div>
+            <div id="teacherDashboardContainer" class="parent-dashboard"></div>
+        </div>
+
+        <!-- PAGE POUR TOI (étudiant) -->
+        <div class="page-container" id="page-pour-toi">
+            <div class="content-header"><div class="page-title"><h1><i class="fas fa-sparkles"></i>Pour Toi</h1><p>Recommandations personnalisées</p></div><div class="header-actions"><button class="logout-btn" id="studentLogoutBtn"><i class="fas fa-sign-out-alt"></i> Déconnexion</button></div></div>
+            <div class="quick-stats">
+                <div class="stat-card"><div class="stat-icon"><i class="fas fa-video"></i></div><div class="stat-value">47</div><div class="stat-label">Vidéos vues</div></div>
+                <div class="stat-card"><div class="stat-icon"><i class="fas fa-clock"></i></div><div class="stat-value">128h</div><div class="stat-label">Apprentissage</div></div>
+                <div class="stat-card"><div class="stat-icon"><i class="fas fa-trophy"></i></div><div class="stat-value">12</div><div class="stat-label">Certificats</div></div>
+                <div class="stat-card"><div class="stat-icon"><i class="fas fa-users"></i></div><div class="stat-value">28</div><div class="stat-label">Pairs actifs</div></div>
+            </div>
+            <div class="widget"><div class="widget-title"><i class="fas fa-clock"></i> Vidéos recommandées</div>
+                <div class="video-grid">
+                    <div class="video-card" onclick="showNotification('Lecture: Design Patterns')"><div class="video-thumbnail"><div class="play-btn"><i class="fas fa-play"></i></div></div><div><div class="video-title">Design Pattern Observer</div><span class="category-badge">Dev Avancé</span><p class="video-desc">Implémentation en projet réel</p></div></div>
+                    <div class="video-card" onclick="showNotification('Lecture: Macroéconomie')"><div class="video-thumbnail"><div class="play-btn"><i class="fas fa-play"></i></div></div><div><div class="video-title">Politique monétaire et inflation</div><span class="category-badge">Macroéconomie</span></div></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- AUTRES PAGES SIMPLIFIÉES -->
+        <div class="page-container" id="page-videos"><div class="category-header"><h1>Toutes les vidéos</h1><p>+50 contenus exclusifs</p></div><div class="video-grid"><div class="video-card"><div class="video-thumbnail"><div class="play-btn"><i class="fas fa-play"></i></div></div><div><div class="video-title">Microservices avec RabbitMQ</div></div></div></div></div>
+        <div class="page-container" id="page-dev-avance"><div class="category-header"><h1><i class="fas fa-code"></i> Développement Avancé</h1></div><div class="resource-grid"><div class="resource-card"><h3>Design Patterns Complets</h3><button class="btn-block btn-margin-top" onclick="showNotification('Cours lancé')">Commencer</button></div><div class="resource-card"><h3>Microservices & Cloud</h3><button class="btn-block btn-margin-top" onclick="showNotification('Cours lancé')">Explorer</button></div></div></div>
+        <div class="page-container" id="page-micro-macro"><div class="category-header"><h1>Micro & Macroéconomie</h1></div><div class="resource-grid"><div class="resource-card"><h3>Offre et Demande</h3><button class="btn-block" onclick="showNotification('Module démarré')">Étudier</button></div></div></div>
+        <div class="page-container" id="page-pensee-critique"><div class="category-header"><h1>Pensée Critique</h1></div><div class="widget"><p>Ateliers d'analyse et de raisonnement logique</p></div></div>
+        <div class="page-container" id="page-leadership"><div class="category-header"><h1>Leadership & RH</h1></div><div class="widget"><p>Gestion d'équipe, communication managériale</p></div></div>
+        <div class="page-container" id="page-entrepreneuriat"><div class="category-header"><h1>Entrepreneuriat</h1></div><div class="resource-grid"><div class="resource-card"><h3>Business Model Canvas</h3><button class="btn-block" onclick="showNotification('Lancement du module')">Démarrer</button></div></div></div>
+        <div class="page-container" id="page-psychologue"><div class="category-header" style="background:linear-gradient(135deg,#4c1d95,#5b21b6);"><h1><i class="fas fa-hand-holding-heart"></i> Bien-être & Psychologie</h1></div><div class="widget"><div class="widget-title">Séances disponibles</div><button class="btn-block" onclick="showNotification('RDV avec psychologue')">Prendre rendez-vous</button></div></div>
+
+        <!-- ESPACE ÉLÈVES DU SECONDAIRE -->
+        <div class="page-container" id="page-eleve-secondaire">
+            <div class="content-header">
+                <div class="page-title"><h1><i class="fas fa-school"></i> Espace Élèves Secondaire</h1><p>Prépare ton avenir universitaire</p></div>
+                <button class="logout-btn" id="eleveLogoutBtn"><i class="fas fa-sign-out-alt"></i> Déconnexion</button>
+            </div>
+
+            <!-- Statistiques rapides -->
+            <div class="quick-stats">
+                <div class="stat-card"><div class="stat-icon"><i class="fas fa-users"></i></div><div class="stat-value">156</div><div class="stat-label">Étudiants mentors</div></div>
+                <div class="stat-card"><div class="stat-icon"><i class="fas fa-question-circle"></i></div><div class="stat-value">89</div><div class="stat-label">Questions répondues</div></div>
+                <div class="stat-card"><div class="stat-icon"><i class="fas fa-graduation-cap"></i></div><div class="stat-value">24</div><div class="stat-label">Parcours partagés</div></div>
+                <div class="stat-card"><div class="stat-icon"><i class="fas fa-calendar-check"></i></div><div class="stat-value">12</div><div class="stat-label">RDV cette semaine</div></div>
+            </div>
+
+            <!-- Section Parcours Universitaires -->
+            <div class="widget">
+                <div class="widget-title"><i class="fas fa-route"></i> Découvre les Parcours Universitaires</div>
+                <div class="resource-grid">
+                    <div class="resource-card">
+                        <h3><i class="fas fa-code"></i> Informatique & IA</h3>
+                        <p>Développement, cybersécurité, data science... Les débouchés sont nombreux !</p>
+                        <div style="margin-top: 16px;">
+                            <button class="btn-secondary" onclick="showUniversityPath('informatique')" style="margin-right: 8px;"><i class="fas fa-eye"></i> Voir parcours</button>
+                            <button class="btn-secondary" onclick="contactMentor('informatique')"><i class="fas fa-user-graduate"></i> Contacter mentor</button>
+                        </div>
+                    </div>
+                    <div class="resource-card">
+                        <h3><i class="fas fa-chart-line"></i> Économie & Gestion</h3>
+                        <p>Finance, marketing, entrepreneuriat... Construis ton avenir professionnel.</p>
+                        <div style="margin-top: 16px;">
+                            <button class="btn-secondary" onclick="showUniversityPath('economie')" style="margin-right: 8px;"><i class="fas fa-eye"></i> Voir parcours</button>
+                            <button class="btn-secondary" onclick="contactMentor('economie')"><i class="fas fa-user-graduate"></i> Contacter mentor</button>
+                        </div>
+                    </div>
+                    <div class="resource-card">
+                        <h3><i class="fas fa-cogs"></i> Ingénierie</h3>
+                        <p>Mécanique, électrique, civile... L'innovation au service de la société.</p>
+                        <div style="margin-top: 16px;">
+                            <button class="btn-secondary" onclick="showUniversityPath('ingenierie')" style="margin-right: 8px;"><i class="fas fa-eye"></i> Voir parcours</button>
+                            <button class="btn-secondary" onclick="contactMentor('ingenierie')"><i class="fas fa-user-graduate"></i> Contacter mentor</button>
+                        </div>
+                    </div>
+                    <div class="resource-card">
+                        <h3><i class="fas fa-flask"></i> Sciences & Recherche</h3>
+                        <p>Biologie, chimie, physique... Explore les mystères de l'univers.</p>
+                        <div style="margin-top: 16px;">
+                            <button class="btn-secondary" onclick="showUniversityPath('sciences')" style="margin-right: 8px;"><i class="fas fa-eye"></i> Voir parcours</button>
+                            <button class="btn-secondary" onclick="contactMentor('sciences')"><i class="fas fa-user-graduate"></i> Contacter mentor</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Section Communication avec Étudiants/Enseignants -->
+            <div class="widget">
+                <div class="widget-title"><i class="fas fa-comments"></i> Échange avec la Communauté</div>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
+                    <!-- Chat avec étudiants -->
+                    <div style="background: var(--bg-secondary); padding: 20px; border-radius: 16px; border: 1px solid var(--border-light);">
+                        <h4 style="margin-bottom: 16px; display: flex; align-items: center; gap: 8px;"><i class="fas fa-user-graduate"></i> Chat avec Étudiants</h4>
+                        <div id="studentChatMessages" style="height: 200px; overflow-y: auto; background: white; border-radius: 12px; padding: 12px; margin-bottom: 12px; border: 1px solid var(--border-light);">
+                            <div style="color: var(--text-muted); font-style: italic;">Bienvenue dans le chat étudiants ! Pose tes questions sur la vie universitaire.</div>
+                        </div>
+                        <div style="display: flex; gap: 8px;">
+                            <input type="text" id="studentChatInput" placeholder="Pose ta question..." style="flex: 1; padding: 10px; border-radius: 20px; border: 1px solid var(--border-light);">
+                            <button class="btn-secondary" onclick="sendStudentMessage()" style="padding: 10px 16px;"><i class="fas fa-paper-plane"></i></button>
+                        </div>
+                    </div>
+
+                    <!-- Chat avec enseignants -->
+                    <div style="background: var(--bg-secondary); padding: 20px; border-radius: 16px; border: 1px solid var(--border-light);">
+                        <h4 style="margin-bottom: 16px; display: flex; align-items: center; gap: 8px;"><i class="fas fa-chalkboard-teacher"></i> Chat avec Enseignants</h4>
+                        <div id="teacherChatMessages" style="height: 200px; overflow-y: auto; background: white; border-radius: 12px; padding: 12px; margin-bottom: 12px; border: 1px solid var(--border-light);">
+                            <div style="color: var(--text-muted); font-style: italic;">Les enseignants sont là pour te guider dans tes choix d'orientation.</div>
+                        </div>
+                        <div style="display: flex; gap: 8px;">
+                            <input type="text" id="teacherChatInput" placeholder="Demande conseil..." style="flex: 1; padding: 10px; border-radius: 20px; border: 1px solid var(--border-light);">
+                            <button class="btn-secondary" onclick="sendTeacherMessage()" style="padding: 10px 16px;"><i class="fas fa-paper-plane"></i></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Section Q&R -->
+            <div class="widget">
+                <div class="widget-title"><i class="fas fa-question-circle"></i> Questions & Réponses</div>
+                <div style="margin-bottom: 20px;">
+                    <input type="text" id="qnaSearch" placeholder="Recherche une question..." style="width: 100%; padding: 12px; border-radius: 24px; border: 1px solid var(--border-light); margin-bottom: 16px;">
+                    <button class="btn-secondary" onclick="searchQNA()" style="margin-right: 8px;"><i class="fas fa-search"></i> Rechercher</button>
+                    <button class="btn-primary" onclick="askNewQuestion()"><i class="fas fa-plus"></i> Poser une question</button>
+                </div>
+
+                <div id="qnaContainer">
+                    <div class="resource-card" style="margin-bottom: 16px;">
+                        <h4>Comment choisir entre informatique et ingénierie ?</h4>
+                        <p style="color: var(--text-secondary); margin: 8px 0;">Réponses: 12 | Par: Ahmed B. (2ème année Info)</p>
+                        <button class="btn-secondary" onclick="viewQNA(1)">Voir les réponses</button>
+                    </div>
+                    <div class="resource-card" style="margin-bottom: 16px;">
+                        <h4>Quelles sont les débouchés en économie ?</h4>
+                        <p style="color: var(--text-secondary); margin: 8px 0;">Réponses: 8 | Par: Dr. Leila M. (Enseignante)</p>
+                        <button class="btn-secondary" onclick="viewQNA(2)">Voir les réponses</button>
+                    </div>
+                    <div class="resource-card" style="margin-bottom: 16px;">
+                        <h4>Comment réussir le baccalauréat ?</h4>
+                        <p style="color: var(--text-secondary); margin: 8px 0;">Réponses: 15 | Par: Sarah K. (Terminale)</p>
+                        <button class="btn-secondary" onclick="viewQNA(3)">Voir les réponses</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Section Rendez-vous -->
+            <div class="widget">
+                <div class="widget-title"><i class="fas fa-calendar-alt"></i> Prendre Rendez-vous</div>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 16px;">
+                    <div class="resource-card">
+                        <h4><i class="fas fa-user-graduate"></i> Session d'orientation</h4>
+                        <p>Échange individuel avec un étudiant mentor pour découvrir un parcours.</p>
+                        <button class="btn-primary" onclick="bookAppointment('orientation')">Réserver</button>
+                    </div>
+                    <div class="resource-card">
+                        <h4><i class="fas fa-chalkboard-teacher"></i> Conseil enseignant</h4>
+                        <p>Discussion avec un professeur pour des conseils personnalisés.</p>
+                        <button class="btn-primary" onclick="bookAppointment('enseignant')">Réserver</button>
+                    </div>
+                    <div class="resource-card">
+                        <h4><i class="fas fa-users"></i> Atelier collectif</h4>
+                        <p>Participe à un atelier de groupe sur l'orientation universitaire.</p>
+                        <button class="btn-primary" onclick="bookAppointment('atelier')">S'inscrire</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal-overlay" id="modal"><div class="modal"><div class="modal-header"><h2 id="modalTitle">Notification</h2><button class="modal-close" onclick="closeModal()"><i class="fas fa-times"></i></button></div><p id="modalMessage" class="modal-message"></p></div></div>
+
+<script>
+    // ==================== BASE DE DONNÉES SIMULÉE ====================
+    let usersDB = [
+        { id: 1, name: "Parent ", email: "parent@edu.com", password: "parent123", role: "parent", 
+          children: [
+              { id: 101, name: "Sarah Ben Ali", class: "2ème CPI", progress: 72, videosWatched: 52, hoursSpent: 142, certificates: 6, lastActive: "Aujourd'hui", grades: { "Design Patterns": 85, "Macroéconomie": 78, "Leadership": 92 } },
+              { id: 102, name: "Omar Ben Ali", class: "1ère CPI", progress: 45, videosWatched: 28, hoursSpent: 64, certificates: 2, lastActive: "Hier", grades: { "Algorithmique": 68, "Microéconomie": 72 } }
+          ] },
+        { id: 2, name: "Étudiant Test", email: "etudiant@edu.com", password: "123456", role: "etudiant", children: [] },
+        { id: 4, name: "Ahmed Terminale", email: "eleve@edu.com", password: "eleve123", role: "eleve", children: [] },
+        { id: 3, name: "Dr. Karim", email: "enseignant@edu.com", password: "enseignant123", role: "enseignant", 
+          courses: [
+              { id: 201, title: "Design Patterns Avancés", students: 45, avgGrade: 82, nextSession: "Demain 14h" },
+              { id: 202, title: "Architecture Microservices", students: 32, avgGrade: 78, nextSession: "Vendredi 10h" }
+          ] }
+    ];
+    
+    let currentUser = null;
+    
+    function saveToLocal() { localStorage.setItem("superedu_users", JSON.stringify(usersDB)); }
+    function loadFromLocal() { let data = localStorage.getItem("superedu_users"); if(data) usersDB = JSON.parse(data); else saveToLocal(); }
+    loadFromLocal();
+    
+    function showNotification(msg, isError = false) {
+        const modal = document.getElementById('modal');
+        document.getElementById('modalTitle').textContent = isError ? "Information" : "Succès";
+        document.getElementById('modalMessage').textContent = msg;
+        modal.classList.add('active');
+        setTimeout(() => modal.classList.remove('active'), 3000);
+    }
+    function closeModal() { document.getElementById('modal').classList.remove('active'); }
+    
+    function updateSidebar() {
+        const sidebarDiv = document.getElementById('sidebarUser');
+        if(currentUser) {
+            let initials = currentUser.name.split(' ').map(n=>n[0]).join('').toUpperCase().slice(0,2);
+            let roleText = currentUser.role === 'parent' ? '👨‍👩‍👧 Parent' : currentUser.role === 'enseignant' ? '👨‍🏫 Enseignant' : '🎓 Étudiant';
+            sidebarDiv.innerHTML = `<div class="user-avatar">${initials}</div><div class="user-info"><h4>${currentUser.name}</h4><p>${roleText}</p></div>`;
+        } else {
+            sidebarDiv.innerHTML = `<div class="user-avatar">👤</div><div class="user-info"><h4>Invite</h4><p>Connectez-vous</p></div>`;
+        }
+    }
+    
+    function renderParentDashboard() {
+        if(!currentUser || currentUser.role !== 'parent') return;
+        const container = document.getElementById('parentDashboardContainer');
+        if(!container) return;
+        let children = currentUser.children || [];
+        if(children.length === 0) {
+            container.innerHTML = `<div class="widget" style="text-align:center; padding:40px;"><i class="fas fa-user-friends" style="font-size:60px; color:var(--accent);"></i><h3>Aucun enfant associé</h3><p>Contactez l'administration pour lier vos enfants.</p></div>`;
+            return;
+        }
+        let html = `<div class="grid-2cols">`;
+        children.forEach(child => {
+            let gradeList = '';
+            if(child.grades) {
+                gradeList = Object.entries(child.grades).map(([subj, score]) => `<div class="info-chip" style="justify-content:space-between;"><span>${subj}</span><strong style="color:var(--accent);">${score}/100</strong></div>`).join('');
+            }
+            html += `
+                <div class="parent-child-card">
+                    <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap;"><h2><i class="fas fa-user-graduate"></i> ${child.name}</h2><span class="badge-new" style="background:#e2e8f0; color:#0f172a;">${child.class}</span></div>
+                    <div class="progress-parent"><div class="progress-info" style="display:flex; justify-content:space-between;"><span>Progression globale</span><span>${child.progress}%</span></div><div class="progress-bar-parent"><div class="progress-fill-parent" style="width:${child.progress}%;"></div></div></div>
+                    <div class="grid-2cols">
+                        <div class="info-chip"><i class="fas fa-video"></i><div><strong>${child.videosWatched}</strong><br>Vidéos</div></div>
+                        <div class="info-chip"><i class="fas fa-clock"></i><div><strong>${child.hoursSpent}h</strong><br>Apprentissage</div></div>
+                        <div class="info-chip"><i class="fas fa-certificate"></i><div><strong>${child.certificates}</strong><br>Certificats</div></div>
+                        <div class="info-chip"><i class="fas fa-calendar"></i><div><strong>${child.lastActive}</strong><br>Activité</div></div>
+                    </div>
+                    ${gradeList ? `<div style="margin-top:16px;"><h4 style="margin-bottom:12px;">📊 Notes récentes</h4><div class="grid-2cols">${gradeList}</div></div>` : ''}
+                    <button class="btn-secondary" style="margin-top:20px; width:100%;" onclick="showNotification('Rapport détaillé de ${child.name} généré avec succès')"><i class="fas fa-chart-line"></i> Télécharger rapport complet</button>
+                </div>
+            `;
+        });
+        html += `</div><div class="widget" style="margin-top:24px;"><div class="widget-title"><i class="fas fa-lightbulb"></i> Conseils personnalisés</div><p>✨ ${children[0]?.name || "Votre enfant"} progresse bien ! Encouragez-le à terminer le module "Design Patterns" pour valider sa certification.</p><button class="btn-block" style="margin-top:12px;" onclick="showNotification('Ressources envoyées par email')">📧 Envoyer des exercices</button></div>`;
+        container.innerHTML = html;
+    }
+    
+    function renderTeacherDashboard() {
+        if(!currentUser || currentUser.role !== 'enseignant') return;
+        const container = document.getElementById('teacherDashboardContainer');
+        if(!container) return;
+        let courses = currentUser.courses || [];
+        if(courses.length === 0) {
+            container.innerHTML = `<div class="widget" style="text-align:center; padding:40px;"><i class="fas fa-chalkboard-teacher" style="font-size:60px; color:var(--accent);"></i><h3>Aucun cours assigné</h3><p>Contactez l'administration pour vos cours.</p></div>`;
+            return;
+        }
+        let html = `<div class="grid-2cols">`;
+        courses.forEach(course => {
+            html += `
+                <div class="parent-child-card">
+                    <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap;"><h2><i class="fas fa-book"></i> ${course.title}</h2><span class="badge-new" style="background:#e2e8f0; color:#0f172a;">${course.students} étudiants</span></div>
+                    <div class="progress-parent"><div class="progress-info" style="display:flex; justify-content:space-between;"><span>Moyenne classe</span><span>${course.avgGrade}/100</span></div><div class="progress-bar-parent"><div class="progress-fill-parent" style="width:${course.avgGrade}%;"></div></div></div>
+                    <div class="grid-2cols">
+                        <div class="info-chip"><i class="fas fa-users"></i><div><strong>${course.students}</strong><br>Étudiants</div></div>
+                        <div class="info-chip"><i class="fas fa-chart-line"></i><div><strong>${course.avgGrade}%</strong><br>Moyenne</div></div>
+                        <div class="info-chip"><i class="fas fa-calendar"></i><div><strong>${course.nextSession}</strong><br>Prochaine séance</div></div>
+                        <div class="info-chip"><i class="fas fa-tasks"></i><div><strong>5</strong><br>Devoirs</div></div>
+                    </div>
+                    <div style="margin-top:16px;"><h4 style="margin-bottom:12px;">📊 Actions rapides</h4><div class="grid-2cols">
+                        <button class="btn-secondary" onclick="showNotification('Liste des étudiants exportée')"><i class="fas fa-download"></i> Exporter liste</button>
+                        <button class="btn-secondary" onclick="showNotification('Notification envoyée aux étudiants')"><i class="fas fa-bell"></i> Notifier classe</button>
+                        <button class="btn-secondary" onclick="showNotification('Devoir créé avec succès')"><i class="fas fa-plus"></i> Nouveau devoir</button>
+                        <button class="btn-secondary" onclick="showNotification('Rapport généré')"><i class="fas fa-chart-bar"></i> Rapport performance</button>
+                    </div></div>
+                </div>
+            `;
+        });
+        html += `</div><div class="widget" style="margin-top:24px;"><div class="widget-title"><i class="fas fa-calendar-alt"></i> Planning de la semaine</div><p>📅 Aujourd'hui: Cours Design Patterns (14h-16h)<br>📅 Demain: Atelier Microservices (10h-12h)<br>📅 Vendredi: Évaluation Leadership (9h-11h)</p><button class="btn-block" style="margin-top:12px;" onclick="showNotification('Planning synchronisé avec calendrier')">📱 Synchroniser calendrier</button></div>`;
+        container.innerHTML = html;
+    }
+    
+    function switchToPage(pageId) {
+        if(!currentUser) { showNotification("Veuillez vous connecter d'abord", true); return; }
+        if(pageId === 'parent-space' && currentUser.role !== 'parent') { showNotification("Accès réservé aux parents", true); return; }
+        if(pageId === 'teacher-space' && currentUser.role !== 'enseignant') { showNotification("Accès réservé aux enseignants", true); return; }
+        if(pageId === 'eleve-secondaire' && currentUser.role !== 'eleve') { showNotification("Accès réservé aux élèves du secondaire", true); return; }
+        document.querySelectorAll('.page-container').forEach(p => p.classList.remove('active-page'));
+        const targetPage = document.getElementById(`page-${pageId}`);
+        if(targetPage) targetPage.classList.add('active-page');
+        document.querySelectorAll('.nav-item').forEach(btn => btn.classList.remove('active'));
+        document.querySelector(`.nav-item[data-page="${pageId}"]`)?.classList.add('active');
+        if(pageId === 'parent-space' && currentUser.role === 'parent') renderParentDashboard();
+        if(pageId === 'teacher-space' && currentUser.role === 'enseignant') renderTeacherDashboard();
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+    
+    function logout() {
+        currentUser = null;
+        updateSidebar();
+        document.querySelectorAll('.page-container').forEach(p => p.classList.remove('active-page'));
+        document.getElementById('page-auth').classList.add('active-page');
+        document.getElementById('loginEmail').value = '';
+        document.getElementById('loginPassword').value = '';
+        showNotification("Déconnexion réussie");
+    }
+    
+    // Événements connexion/inscription
+    document.getElementById('doLoginBtn')?.addEventListener('click', () => {
+        const email = document.getElementById('loginEmail').value.trim();
+        const pwd = document.getElementById('loginPassword').value;
+        const user = usersDB.find(u => u.email === email && u.password === pwd);
+        if(user) {
+            currentUser = user;
+            updateSidebar();
+            if(user.role === 'parent') switchToPage('parent-space');
+            else if(user.role === 'enseignant') switchToPage('teacher-space');
+            else switchToPage('pour-toi');
+            showNotification(`Bienvenue ${user.name} !`);
+        } else { showNotification("Email ou mot de passe incorrect", true); }
+    });
+    
+    document.getElementById('doRegisterBtn')?.addEventListener('click', () => {
+        const name = document.getElementById('regName').value.trim();
+        const email = document.getElementById('regEmail').value.trim();
+        const role = document.getElementById('regRole').value;
+        const pwd = document.getElementById('regPassword').value;
+        if(!name || !email || !pwd) { showNotification("Tous les champs sont requis", true); return; }
+        if(pwd.length < 6) { showNotification("Mot de passe min 6 caractères", true); return; }
+        if(usersDB.find(u => u.email === email)) { showNotification("Email déjà utilisé", true); return; }
+        const newUser = { id: Date.now(), name, email, password: pwd, role, children: role === 'parent' ? [] : undefined };
+        usersDB.push(newUser);
+        saveToLocal();
+        showNotification("Inscription réussie ! Connectez-vous.");
+        document.querySelector('.auth-tab[data-auth="login"]').click();
+        document.getElementById('loginEmail').value = email;
+        document.getElementById('loginPassword').value = '';
+    });
+    
+    // Tabs authentification
+    document.querySelectorAll('.auth-tab').forEach(tab => {
+        tab.addEventListener('click', () => {
+            document.querySelectorAll('.auth-tab').forEach(t => t.classList.remove('active'));
+            tab.classList.add('active');
+            const formId = tab.dataset.auth === 'login' ? 'loginForm' : 'registerForm';
+            document.querySelectorAll('.auth-form').forEach(f => f.classList.remove('active-form'));
+            document.getElementById(formId).classList.add('active-form');
+        });
+    });
+    
+    // Navigation
+    document.querySelectorAll('.nav-item').forEach(btn => {
+        btn.addEventListener('click', () => { if(btn.dataset.page) switchToPage(btn.dataset.page); });
+    });
+    document.getElementById('parentLogoutBtn')?.addEventListener('click', logout);
+    document.getElementById('studentLogoutBtn')?.addEventListener('click', logout);
+    document.getElementById('teacherLogoutBtn')?.addEventListener('click', logout);
+    document.getElementById('eleveLogoutBtn')?.addEventListener('click', logout);
+    
+    // ==================== FONCTIONS ÉLÈVES SECONDAIRE ====================
+    
+    // Afficher les parcours universitaires
+    function showUniversityPath(domain) {
+        const paths = {
+            'informatique': {
+                title: 'Parcours Informatique & IA',
+                description: 'Un domaine en pleine expansion avec de nombreuses opportunités',
+                steps: [
+                    'Licence en Informatique (3 ans)',
+                    'Master en Développement/IA (2 ans)',
+                    'Doctorat (optionnel, 3 ans)',
+                    'Alternance/Stage dès la 2ème année'
+                ],
+                careers: ['Développeur Full-Stack', 'Data Scientist', 'Ingénieur IA', 'Consultant IT'],
+                salary: '35k-80k€ selon expérience'
+            },
+            'economie': {
+                title: 'Parcours Économie & Gestion',
+                description: 'Comprendre les mécanismes économiques et managériaux',
+                steps: [
+                    'Licence Économie/Gestion (3 ans)',
+                    'Master Finance/Marketing (2 ans)',
+                    'MBA/Executive (optionnel)',
+                    'Stages en entreprise recommandés'
+                ],
+                careers: ['Analyste financier', 'Chef de projet', 'Consultant', 'Entrepreneur'],
+                salary: '30k-70k€ selon poste'
+            },
+            'ingenierie': {
+                title: 'Parcours Ingénierie',
+                description: 'Concevoir et innover pour résoudre les défis techniques',
+                steps: [
+                    'Classe préparatoire (2 ans)',
+                    'École d\'ingénieurs (3 ans)',
+                    'Master spécialisé (optionnel)',
+                    'Projets techniques tout au long'
+                ],
+                careers: ['Ingénieur R&D', 'Chef de projet technique', 'Consultant', 'Manager'],
+                salary: '40k-90k€ selon spécialité'
+            },
+            'sciences': {
+                title: 'Parcours Sciences & Recherche',
+                description: 'Explorer les mystères de la nature et innover scientifiquement',
+                steps: [
+                    'Licence Sciences (3 ans)',
+                    'Master Recherche (2 ans)',
+                    'Doctorat (3 ans)',
+                    'Stages en labo dès la 2ème année'
+                ],
+                careers: ['Chercheur', 'Enseignant-chercheur', 'R&D', 'Consultant scientifique'],
+                salary: '30k-60k€ selon carrière'
+            }
+        };
+        
+        const path = paths[domain];
+        if (!path) return;
+        
+        const content = `
+            <div style="text-align: center; margin-bottom: 24px;">
+                <h2 style="color: var(--primary); margin-bottom: 8px;">${path.title}</h2>
+                <p style="color: var(--text-secondary);">${path.description}</p>
+            </div>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-bottom: 24px;">
+                <div style="background: var(--bg-secondary); padding: 20px; border-radius: 16px;">
+                    <h4 style="margin-bottom: 12px;"><i class="fas fa-road"></i> Parcours académique</h4>
+                    <ul style="padding-left: 20px;">
+                        ${path.steps.map(step => `<li style="margin-bottom: 8px;">${step}</li>`).join('')}
+                    </ul>
+                </div>
+                <div style="background: var(--bg-secondary); padding: 20px; border-radius: 16px;">
+                    <h4 style="margin-bottom: 12px;"><i class="fas fa-briefcase"></i> Métiers possibles</h4>
+                    <ul style="padding-left: 20px;">
+                        ${path.careers.map(career => `<li style="margin-bottom: 8px;">${career}</li>`).join('')}
+                    </ul>
+                    <div style="margin-top: 16px; padding: 12px; background: var(--accent); color: white; border-radius: 8px;">
+                        <strong>Salaire moyen: ${path.salary}</strong>
+                    </div>
+                </div>
+            </div>
+            <div style="text-align: center;">
+                <button class="btn-primary" onclick="contactMentor('${domain}')">Contacter un mentor dans ce domaine</button>
+            </div>
+        `;
+        
+        document.getElementById('modalTitle').textContent = path.title;
+        document.getElementById('modalMessage').innerHTML = content;
+        document.getElementById('modal').classList.add('active');
+    }
+    
+    // Contacter un mentor
+    function contactMentor(domain) {
+        const mentors = {
+            'informatique': ['Ahmed B. (2A Info)', 'Sarah K. (3A IA)', 'Mohamed L. (Dev Full-Stack)'],
+            'economie': ['Dr. Leila M. (Économie)', 'Karim T. (Finance)', 'Amira S. (Marketing)'],
+            'ingenierie': ['Prof. Sami R. (Mécanique)', 'Inès B. (Électronique)', 'Youssef M. (Civile)'],
+            'sciences': ['Dr. Nadia F. (Biologie)', 'Prof. Hassen K. (Chimie)', 'Dr. Sonia M. (Physique)']
+        };
+        
+        const domainMentors = mentors[domain] || ['Mentor disponible'];
+        const content = `
+            <div style="text-align: center; margin-bottom: 20px;">
+                <h3>Mentors disponibles en ${domain.charAt(0).toUpperCase() + domain.slice(1)}</h3>
+                <p>Sélectionne un mentor pour prendre rendez-vous</p>
+            </div>
+            <div style="display: flex; flex-direction: column; gap: 12px;">
+                ${domainMentors.map(mentor => `
+                    <button class="btn-secondary" onclick="bookAppointmentWithMentor('${mentor}')">
+                        <i class="fas fa-user-graduate"></i> ${mentor}
+                    </button>
+                `).join('')}
+            </div>
+        `;
+        
+        document.getElementById('modalTitle').textContent = 'Contacter un Mentor';
+        document.getElementById('modalMessage').innerHTML = content;
+        document.getElementById('modal').classList.add('active');
+    }
+    
+    // Gestion des chats
+    function sendStudentMessage() {
+        const input = document.getElementById('studentChatInput');
+        const message = input.value.trim();
+        if (!message) return;
+        
+        const chatDiv = document.getElementById('studentChatMessages');
+        const messageDiv = document.createElement('div');
+        messageDiv.style.cssText = 'background: var(--accent); color: white; padding: 8px 12px; border-radius: 16px; margin: 8px 0; margin-left: auto; max-width: 70%; word-wrap: break-word;';
+        messageDiv.textContent = message;
+        chatDiv.appendChild(messageDiv);
+        chatDiv.scrollTop = chatDiv.scrollHeight;
+        input.value = '';
+        
+        // Simulation de réponse
+        setTimeout(() => {
+            const responses = [
+                "Salut ! En informatique, commence par apprendre Python, c'est accessible et très demandé.",
+                "Pour l'orientation, regarde les salons virtuels organisés par les universités.",
+                "Les stages sont super importants ! Essaie d'en faire un pendant les vacances.",
+                "N'hésite pas à demander des conseils aux étudiants en 2ème année, ils connaissent bien les difficultés."
+            ];
+            const responseDiv = document.createElement('div');
+            responseDiv.style.cssText = 'background: var(--bg-secondary); padding: 8px 12px; border-radius: 16px; margin: 8px 0; max-width: 70%; word-wrap: break-word;';
+            responseDiv.innerHTML = `<strong>Étudiant Mentor:</strong> ${responses[Math.floor(Math.random() * responses.length)]}`;
+            chatDiv.appendChild(responseDiv);
+            chatDiv.scrollTop = chatDiv.scrollHeight;
+        }, 1000 + Math.random() * 2000);
+    }
+    
+    function sendTeacherMessage() {
+        const input = document.getElementById('teacherChatInput');
+        const message = input.value.trim();
+        if (!message) return;
+        
+        const chatDiv = document.getElementById('teacherChatMessages');
+        const messageDiv = document.createElement('div');
+        messageDiv.style.cssText = 'background: var(--accent); color: white; padding: 8px 12px; border-radius: 16px; margin: 8px 0; margin-left: auto; max-width: 70%; word-wrap: break-word;';
+        messageDiv.textContent = message;
+        chatDiv.appendChild(messageDiv);
+        chatDiv.scrollTop = chatDiv.scrollHeight;
+        input.value = '';
+        
+        // Simulation de réponse enseignant
+        setTimeout(() => {
+            const responses = [
+                "Pour réussir tes études, il faut développer une méthode de travail régulière.",
+                "Les matières scientifiques demandent beaucoup de pratique. Fais des exercices régulièrement.",
+                "Pour l'orientation, pense à tes centres d'intérêt et à tes points forts.",
+                "Les enseignants peuvent t'aider à choisir ton parcours. N'hésite pas à prendre rendez-vous."
+            ];
+            const responseDiv = document.createElement('div');
+            responseDiv.style.cssText = 'background: var(--bg-secondary); padding: 8px 12px; border-radius: 16px; margin: 8px 0; max-width: 70%; word-wrap: break-word;';
+            responseDiv.innerHTML = `<strong>Enseignant:</strong> ${responses[Math.floor(Math.random() * responses.length)]}`;
+            chatDiv.appendChild(responseDiv);
+            chatDiv.scrollTop = chatDiv.scrollHeight;
+        }, 1500 + Math.random() * 2000);
+    }
+    
+    // Gestion Q&R
+    function searchQNA() {
+        const query = document.getElementById('qnaSearch').value.trim();
+        if (!query) {
+            showNotification('Veuillez entrer un terme de recherche');
+            return;
+        }
+        showNotification(`Recherche: "${query}" - Fonctionnalité en développement`);
+    }
+    
+    function askNewQuestion() {
+        const question = prompt('Pose ta question sur l\'orientation universitaire:');
+        if (question && question.trim()) {
+            showNotification('Question envoyée ! Un mentor te répondra bientôt.');
+        }
+    }
+    
+    function viewQNA(id) {
+        const qnas = {
+            1: {
+                question: 'Comment choisir entre informatique et ingénierie ?',
+                answers: [
+                    {author: 'Ahmed B. (2A Info)', text: 'Ça dépend de tes préférences ! Info = plus de liberté créative, Ingénierie = plus de contraintes techniques mais salaire souvent plus élevé.'},
+                    {author: 'Prof. Sami R.', text: 'L\'informatique est plus généraliste, l\'ingénierie plus spécialisée. Teste les deux domaines avant de choisir.'},
+                    {author: 'Sarah K. (Terminale)', text: 'Si tu aimes coder pour le plaisir, va en info. Si tu préfères résoudre des problèmes concrets, ingénierie.'}
+                ]
+            },
+            2: {
+                question: 'Quelles sont les débouchés en économie ?',
+                answers: [
+                    {author: 'Dr. Leila M.', text: 'Finance, audit, consulting, marketing... Les économistes sont très demandés dans tous les secteurs.'},
+                    {author: 'Karim T. (Finance)', text: 'Avec un master, tu peux viser banque, assurance, ou même créer ta startup.'}
+                ]
+            },
+            3: {
+                question: 'Comment réussir le baccalauréat ?',
+                answers: [
+                    {author: 'Sarah K. (Terminale)', text: 'Méthode de travail régulière, révisions quotidiennes, et surtout bien dormir !'},
+                    {author: 'Prof. Nadia F.', text: 'Identifie tes points faibles et travaille-les en priorité. Les maths et la physique sont cruciales.'},
+                    {author: 'Ahmed B.', text: 'Fais des exercices tous les jours, même 30min. La régularité paye plus que le bachotage.'}
+                ]
+            }
+        };
+        
+        const qna = qnas[id];
+        if (!qna) return;
+        
+        let content = `<h3 style="margin-bottom: 20px;">${qna.question}</h3>`;
+        qna.answers.forEach(answer => {
+            content += `
+                <div style="background: var(--bg-secondary); padding: 16px; border-radius: 12px; margin-bottom: 12px; border-left: 4px solid var(--accent);">
+                    <div style="font-weight: 600; color: var(--accent); margin-bottom: 8px;">${answer.author}</div>
+                    <div>${answer.text}</div>
+                </div>
+            `;
+        });
+        
+        document.getElementById('modalTitle').textContent = 'Question & Réponses';
+        document.getElementById('modalMessage').innerHTML = content;
+        document.getElementById('modal').classList.add('active');
+    }
+    
+    // Prendre rendez-vous
+    function bookAppointment(type) {
+        const types = {
+            'orientation': 'Session d\'orientation individuelle',
+            'enseignant': 'Conseil avec un enseignant',
+            'atelier': 'Atelier collectif d\'orientation'
+        };
+        
+        const content = `
+            <div style="text-align: center; margin-bottom: 20px;">
+                <h3>Réserver: ${types[type]}</h3>
+                <p>Choisis une date et heure disponibles</p>
+            </div>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 20px;">
+                <div>
+                    <label style="font-weight: 600;">Date:</label>
+                    <input type="date" id="appointmentDate" style="width: 100%; padding: 8px; border-radius: 8px; border: 1px solid var(--border-light); margin-top: 4px;">
+                </div>
+                <div>
+                    <label style="font-weight: 600;">Heure:</label>
+                    <select id="appointmentTime" style="width: 100%; padding: 8px; border-radius: 8px; border: 1px solid var(--border-light); margin-top: 4px;">
+                        <option>09:00</option><option>10:00</option><option>11:00</option><option>14:00</option><option>15:00</option><option>16:00</option>
+                    </select>
+                </div>
+            </div>
+            <div style="text-align: center;">
+                <button class="btn-primary" onclick="confirmAppointment('${type}')">Confirmer le rendez-vous</button>
+            </div>
+        `;
+        
+        document.getElementById('modalTitle').textContent = 'Prendre Rendez-vous';
+        document.getElementById('modalMessage').innerHTML = content;
+        document.getElementById('modal').classList.add('active');
+    }
+    
+    function bookAppointmentWithMentor(mentor) {
+        closeModal();
+        setTimeout(() => bookAppointment('orientation'), 300);
+        showNotification(`Rendez-vous demandé avec ${mentor}`);
+    }
+    
+    function confirmAppointment(type) {
+        const date = document.getElementById('appointmentDate').value;
+        const time = document.getElementById('appointmentTime').value;
+        
+        if (!date || !time) {
+            showNotification('Veuillez sélectionner une date et heure', true);
+            return;
+        }
+        
+        closeModal();
+        showNotification(`Rendez-vous confirmé pour le ${date} à ${time}h ! Un email de confirmation vous sera envoyé.`);
+    }
+    
+    // ==================== FIN FONCTIONS ÉLÈVES SECONDAIRE ====================
+    
+    // Initialisation: si aucun user, afficher auth
+    if(!currentUser) {
+        document.querySelectorAll('.page-container').forEach(p => p.classList.remove('active-page'));
+        document.getElementById('page-auth').classList.add('active-page');
+    } else {
+        if(currentUser.role === 'parent') switchToPage('parent-space');
+        else if(currentUser.role === 'enseignant') switchToPage('teacher-space');
+        else if(currentUser.role === 'eleve') switchToPage('eleve-secondaire');
+        else switchToPage('pour-toi');
+    }
+    
+    window.showNotification = showNotification;
+    window.closeModal = closeModal;
+    document.getElementById('modal')?.addEventListener('click', (e) => { if(e.target === document.getElementById('modal')) closeModal(); });
+</script>
+</body>
+</html>

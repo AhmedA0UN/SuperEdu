@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Certification · SuperEdu </title>
+    <link rel="icon" type="image/x-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%2338bdf8'%3E%3Cpath d='M12 3L1 9l11 6 11-6-11-6zm0 12.5L4.5 13v4l7.5 4 7.5-4v-4l-7.5 4z'/%3E%3C/svg%3E">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #f8fafc;
+            --surface: #ffffff;
+            --primary: #0f172a;
+            --secondary: #1e293b;
+            --accent: #38bdf8;
+            --accent-dark: #0ea5e9;
+            --text: #0f172a;
+            --muted: #64748b;
+            --border: #e2e8f0;
+            --shadow: 0 20px 60px rgba(15, 23, 42, 0.12);
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html, body { min-height: 100%; }
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background: radial-gradient(circle at top, rgba(56,189,248,0.12), transparent 35%), var(--bg); color: var(--text); }
+        a { color: inherit; text-decoration: none; }
+        .page { display: flex; align-items: center; justify-content: center; min-height: 100vh; padding: 24px; }
+        .card { width: min(1100px, 100%); background: var(--surface); border-radius: 36px; box-shadow: var(--shadow); overflow: hidden; border: 1px solid rgba(15,23,42,0.05); }
+        .hero { display: grid; grid-template-columns: 1.1fr 0.9fr; gap: 32px; padding: 36px; }
+        .hero-text { display: flex; flex-direction: column; gap: 24px; justify-content: center; }
+        .hero-text h1 { font-size: clamp(2rem, 3vw, 3rem); line-height: 1.05; }
+        .hero-text p { color: var(--muted); font-size: 1rem; max-width: 620px; }
+        .hero-text .badge { display: inline-flex; align-items: center; gap: 10px; background: rgba(56,189,248,0.12); color: var(--accent-dark); border-radius: 999px; padding: 10px 18px; font-weight: 700; font-size: 0.95rem; }
+        .certificate-link { display: block; text-align: center; margin: 20px 0; }
+        .certificate-link img { max-width: 100%; height: auto; border-radius: 16px; border: 2px solid var(--accent); box-shadow: 0 8px 24px rgba(56,189,248,0.2); transition: transform 0.3s ease; }
+        .certificate-link:hover img { transform: scale(1.05); }
+        .hero-image { display: grid; place-items: center; }
+        .certificate-preview { width: 100%; max-width: 520px; background: linear-gradient(135deg, #ffffff, #f8fafc); border-radius: 30px; border: 1px solid var(--border); padding: 28px; position: relative; box-shadow: 0 18px 40px rgba(15,23,42,0.08); }
+        .certificate-preview::before { content: ''; position: absolute; inset: 0; border-radius: 30px; pointer-events: none; background: radial-gradient(circle at top left, rgba(56,189,248,0.12), transparent 40%); }
+        .certificate-preview::after { content: 'SuperEdu'; position: absolute; inset: 0; font-size: 96px; font-weight: 800; color: rgba(15,23,42,0.05); display: flex; align-items: center; justify-content: center; letter-spacing: 0.5em; text-transform: uppercase; pointer-events: none; }
+        .certificate-card { position: relative; background: #ffffff; border-radius: 24px; padding: 36px 36px 28px; border: 1px solid rgba(15,23,42,0.08); overflow: hidden; }
+        .certificate-card::before { content: ''; position: absolute; top: -30px; right: -30px; width: 190px; height: 190px; background: radial-gradient(circle, rgba(56,189,248,0.18), transparent 60%); border-radius: 50%; }
+        .certificate-head { text-align: center; margin-bottom: 32px; position: relative; z-index: 1; }
+        .certificate-head h2 { font-size: 0.95rem; text-transform: uppercase; letter-spacing: 0.25em; color: var(--accent-dark); margin-bottom: 14px; }
+        .certificate-brand { color: var(--accent); font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.3em; margin-bottom: 10px; }
+        .certificate-head h3 { font-size: 2rem; letter-spacing: -0.04em; margin-bottom: 14px; }
+        .certificate-head p { color: var(--muted); line-height: 1.7; font-size: 0.96rem; }
+        .certificate-head .subtitle { font-size: 0.92rem; color: var(--accent); letter-spacing: 0.12em; margin-top: 2px; }
+        .recipient { margin: 34px 0; text-align: center; }
+        .recipient span { display: block; font-size: 0.85rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.2em; margin-bottom: 10px; }
+        .recipient h2 { font-size: clamp(2rem, 4vw, 3rem); letter-spacing: -0.05em; }
+        .certificate-line { width: 100%; height: 1px; background: linear-gradient(90deg, transparent, rgba(15,23,42,0.12), transparent); margin: 28px 0; }
+        .certificate-content { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-top: 0; }
+        .certificate-content .certificate-detail { background: rgba(56,189,248,0.05); border-radius: 18px; padding: 20px; border: 1px solid rgba(56,189,248,0.14); }
+        .certificate-content .certificate-detail strong { display: block; color: var(--secondary); margin-bottom: 10px; font-size: 0.98rem; }
+        .certificate-content .certificate-detail span { display: block; color: var(--muted); font-size: 0.9rem; line-height: 1.7; }
+        .certificate-footer { display: flex; justify-content: space-between; align-items: center; margin-top: 34px; gap: 16px; flex-wrap: wrap; }
+        .certificate-signature { display: flex; gap: 16px; flex-wrap: wrap; width: calc(100% - 116px); }
+        .certificate-signature .signature { flex: 1; text-align: left; }
+        .certificate-signature .signature p { font-size: 0.78rem; color: var(--muted); margin-bottom: 6px; letter-spacing: 0.08em; text-transform: uppercase; }
+        .certificate-signature .signature h4 { font-size: 1rem; letter-spacing: 0.05em; margin-bottom: 6px; }
+        .certificate-signature .signature span { display: block; font-size: 0.85rem; color: var(--muted); }
+        .stamp { display: inline-flex; align-items: center; justify-content: center; width: 96px; height: 96px; border-radius: 24px; background: linear-gradient(135deg, rgba(56,189,248,0.18), rgba(15,23,42,0.06)); border: 1px solid rgba(56,189,248,0.16); font-size: 0.78rem; text-align: center; color: var(--accent-dark); padding: 16px; }
+        .actions { display: flex; justify-content: flex-start; gap: 14px; flex-wrap: wrap; margin-top: 16px; }
+        .btn { display: inline-flex; align-items: center; justify-content: center; padding: 14px 26px; border-radius: 999px; border: none; cursor: pointer; font-weight: 700; transition: transform 0.25s ease, box-shadow 0.25s ease; }
+        .btn-primary { background: var(--primary); color: white; }
+        .btn-secondary { background: rgba(56,189,248,0.12); color: var(--accent-dark); }
+        .btn:hover { transform: translateY(-2px); box-shadow: 0 14px 32px rgba(15,23,42,0.12); }
+        .details-panel { padding: 28px 24px 34px; border-top: 1px solid rgba(15,23,42,0.06); display: grid; gap: 18px; }
+        .details-panel h4 { font-size: 1rem; margin-bottom: 10px; }
+        .details-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+        .detail-card { background: rgba(56,189,248,0.08); border-radius: 18px; padding: 18px; border: 1px solid rgba(56,189,248,0.15); }
+        .detail-card span { display: block; font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.16em; color: var(--muted); margin-bottom: 8px; }
+        .detail-card strong { display: block; font-size: 1rem; color: var(--secondary); }
+        @media (max-width: 920px) {
+            .hero { grid-template-columns: 1fr; }
+            .certificate-content { grid-template-columns: 1fr; }
+            .certificate-footer { flex-direction: column; align-items: stretch; }
+        }
+    </style>
+</head>
+<body>
+    <main class="page">
+        <section class="card">
+            <div class="hero">
+                <div class="hero-text">
+                    <span class="badge">Certification officielle</span>
+                    <a href="#certificate-preview" class="certificate-link">
+                        <img src="../imgs/superedu-cert.png" alt="Aperçu du certificat">
+                    </a>
+                    <h1>Obtenez votre certification SuperEdu</h1>
+                    <p>Ce certificat met en valeur votre réussite et confirme votre maîtrise des compétences formalisées dans le parcours choisi. Téléchargez-le, partagez-le sur LinkedIn et valorisez votre profil académique.</p>
+                    <div class="actions">
+                        <a class="btn btn-primary" href="../index.html">Retour à la plateforme</a>
+                        <a class="btn btn-secondary" href="#certificate-preview">Voir le certificat</a>
+                    </div>
+                </div>
+                <div class="hero-image">
+                    <div class="certificate-preview" id="certificate-preview">
+                        <div class="certificate-card">
+                            <div class="certificate-head">
+                                <h2>SuperEdu </h2>
+                                <p class="certificate-brand">superedu-cert</p>
+                                <h3>Certificate of Achievement</h3>
+                                <p class="subtitle">Awarded for successful completion of the training programme</p>
+                            </div>
+                            <div class="recipient">
+                                <span>Presented to</span>
+                                <h2>Foulen Al Foulani</h2>
+                            </div>
+                            <div class="certificate-line"></div>
+                            <div class="certificate-content">
+                                <div class="certificate-detail">
+                                    <strong>HTML & CSS Training programme</strong>
+                                    <span>Maîtrise des fondamentaux du web, de la structure sémantique au design responsive.</span>
+                                </div>
+                                <div class="certificate-detail">
+                                    <strong>Date de délivrance</strong>
+                                    <span>26/10/2024</span>
+                                    <strong style="margin-top:14px;">Certificat n°</strong>
+                                    <span>SE-2026-0154</span>
+                                </div>
+                            </div>
+                            <div class="certificate-line"></div>
+                            <div class="certificate-footer">
+                                <div class="certificate-signature">
+                                    <div class="signature">
+                                        <p>Président(e)</p>
+                                        <h4>Mr Instractor</h4>
+                                        <span>SuperEdu </span>
+                                    </div>
+                                    <div class="signature">
+                                        <p>Vérification</p>
+                                        <h4>Certificat authentique</h4>
+                                        <span>Authentifié par la plateforme</span>
+                                    </div>
+                                </div>
+                                <div class="stamp">Certified<br>Verified</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="details-panel">
+                <h4>Ce que contient cette certification</h4>
+                <div class="details-grid">
+                    <div class="detail-card">
+                        <span>Compétences validées</span>
+                        <strong>HTML, CSS, responsive design, bonnes pratiques UX</strong>
+                    </div>
+                    <div class="detail-card">
+                        <span>Utilisation</span>
+                        <strong>Partager sur LinkedIn, CV, portfolio, dossier de candidature</strong>
+                    </div>
+                    <div class="detail-card">
+                        <span>Format</span>
+                        <strong>PDF haute résolution prêt à imprimer</strong>
+                    </div>
+                    <div class="detail-card">
+                        <span>Vérification</span>
+                        <strong>Code unique pour authentification en ligne</strong>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+</body>
+</html>
