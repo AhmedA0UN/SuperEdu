@@ -1,155 +1,203 @@
 # SuperEdu
 
-SuperEdu est organise en trois couches:
+Plateforme web educative orientee vers l apprentissage, la collaboration academique et l accompagnement des etudiants.
 
-- `backend/` : API Laravel
-- `node-service/` : passerelle Node.js et endpoint de supervision
-- `frontend/` : application React/Vite qui expose les interfaces legacy de Super_Edu
+## Sommaire
 
-Pour un guide de mise en route rapide, voir [setup/SETUP.md](setup/SETUP.md).
+- Objectif
+- Etat du projet
+- Public cible
+- Architecture
+- Fonctionnalites
+- Apercu des pages
+- Structure du depot
+- Demarrage rapide
+- Utilisation
+- Variables d environnement
+- Endpoints techniques
+- Deploiement GitHub Pages
+- FAQ
+- Roadmap
+- Contribution
+- Licence
+
+## Objectif
+
+SuperEdu a pour objectif de proposer une experience numerique moderne pour renforcer les competences academiques et professionnelles, avec un socle technique evolutif vers la production.
+
+## Etat du projet
+
+- Statut: stack fonctionnelle backend + node-service + frontend.
+- Frontend: React/Vite avec integration des pages legacy Super_Edu.
+- Priorite: stabilite de deploiement, lisibilite documentaire, industrialisation progressive.
+
+## Public cible
+
+- Etudiants en formation initiale ou continue.
+- Enseignants souhaitant partager et structurer des contenus.
+- Mentors et encadrants accompagnant la progression.
+
+## Architecture
+
+- [backend](backend): API Laravel.
+- [node-service](node-service): passerelle Node.js pour health, readiness et exposition de statut.
+- [frontend](frontend): application React/Vite servant d enveloppe aux interfaces legacy.
+- [setup](setup): scripts d installation et guide de setup.
+
+Guide de mise en route detaille: [setup/SETUP.md](setup/SETUP.md).
+
+## Fonctionnalites
+
+- Parcours pedagogiques et interfaces d apprentissage.
+- Espaces de consultation et navigation multi-pages.
+- Exposition d endpoints de supervision technique.
+- Deploiement frontend automatise sur GitHub Pages.
+
+## Apercu des pages
+
+- /: accueil React
+- /index: super_edu/index.html
+- /certification: super_edu/Wpages/certification.html
+- /conseils: super_edu/Wpages/conseils.html
+- /mentor-ia: super_edu/Wpages/mentor IA.html
+- /prototype: super_edu/Wpages/prototype.html
+- /weeeelcom: super_edu/Wpages/weeeelcom.html
+
+## Captures d ecran
+
+### Vue principale
+
+![SuperEdu - Vue principale](frontend/public/super_edu/src/p1.png)
 
 ## Structure du depot
 
-```text
 SuperEdu/
-├─ backend/                # API Laravel
-├─ node-service/           # Gateway Node.js
-├─ frontend/               # Application React/Vite
-├─ setup/                  # Scripts et guide d'installation
-│  ├─ setup.bat            # Setup Windows (batch)
-│  ├─ setup.sh             # Setup macOS/Linux
-│  ├─ setup.exe            # Setup Windows (executable)
-│  └─ SETUP.md             # Guide de setup
-├─ .github/workflows/
-│  └─ static.yml           # Deploy frontend vers GitHub Pages
-└─ tools/setup-exe/        # Source du lanceur setup.exe
-```
+|-- backend/
+|-- node-service/
+|-- frontend/
+|-- setup/
+|   |-- setup.bat
+|   |-- setup.sh
+|   |-- setup.exe
+|   `-- SETUP.md
+|-- .github/workflows/
+|   `-- static.yml
+`-- tools/setup-exe/
 
-## Vue d'ensemble
+## Demarrage rapide
 
-Le frontend React sert d'enveloppe autour des pages historiques stockees dans `frontend/public/super_edu/` et expose les routes suivantes:
+Depuis la racine du depot:
 
-- `/` : accueil React
-- `/index` : `super_edu/index.html`
-- `/certification` : `super_edu/Wpages/certification.html`
-- `/conseils` : `super_edu/Wpages/conseils.html`
-- `/mentor-ia` : `super_edu/Wpages/mentor IA.html`
-- `/prototype` : `super_edu/Wpages/prototype.html`
-- `/weeeelcom` : `super_edu/Wpages/weeeelcom.html`
+- Windows executable: setup.exe ou setup/setup.exe
+- Windows batch: setup/setup.bat
+- macOS/Linux: sh setup/setup.sh
 
-## Prerequis
+Les scripts automatisent:
 
-- PHP avec Composer pour `backend/`
-- Node.js 18+ pour `frontend/` et `node-service/`
-- Une base de donnees compatible Laravel si vous voulez utiliser les fonctions backend au-dela du healthcheck
+- creation des .env manquants
+- installation des dependances backend, node-service et frontend
+- generation de la cle Laravel si necessaire
+- build de verification frontend
 
-## Demarrage local
+## Utilisation
 
-Ouvrir trois terminaux, un par couche.
+Si vous demarrez manuellement:
 
-### 1) Backend Laravel
+1. Backend
+	cd backend
+	copy .env.example .env
+	composer install
+	php artisan key:generate
+	php artisan serve --host=127.0.0.1 --port=8000
 
-```bash
-cd backend
-copy .env.example .env
-composer install
-php artisan key:generate
-php artisan serve --host=127.0.0.1 --port=8000
-```
+2. Node service
+	cd node-service
+	copy .env.example .env
+	npm install
+	npm start
 
-### 2) Node service
+3. Frontend
+	cd frontend
+	copy .env.example .env
+	npm install
+	npm run dev
 
-```bash
-cd node-service
-copy .env.example .env
-npm install
-npm start
-```
+Verification locale frontend:
 
-### 3) Frontend React
-
-```bash
 cd frontend
-npm install
-npm run dev
-```
-
-## Variables d'environnement
-
-### backend/.env
-
-La configuration suit le format standard Laravel. Les champs a verifier en priorite sont ceux lies a la base de donnees, au cache, a la queue et au mail.
-
-### node-service/.env
-
-- `PORT` : port HTTP du service Node, par defaut `4000`
-- `LARAVEL_API_URL` : URL de base de l'API Laravel, par defaut `http://localhost:8000/api`
-- `FRONTEND_ORIGINS` : liste d'origines autorisees pour CORS, separees par des virgules
-- `FRONTEND_URL` : alias simple conserve pour compatibilite, par defaut `http://localhost:5173`
-
-### frontend/.env
-
-- `VITE_BASE_PATH` : base d'installation du frontend, par defaut `/`
-
-## Endpoints
-
-- Laravel health: `GET http://localhost:8000/api/health`
-- Node health: `GET http://localhost:4000/health`
-- Node status global: `GET http://localhost:4000/api/status`
-
-## Scripts utiles
-
-### frontend/
-
-- `npm run dev` : lance Vite en mode developpement
-- `npm run build` : genere le build de production dans `frontend/dist/`
-- `npm run lint` : verifie le code front-end
-
-### node-service/
-
-- `npm start` : lance le service Node
-- `npm run dev` : lance le service Node avec redemarrage automatique
-- `GET /health` : verifie que le service est vivant
-- `GET /ready` : verifie que Laravel est joignable avant exposition complete
-
-## Verification rapide
-
-```bash
-cd frontend
-npm run build
 npm run lint
-```
+npm run build
 
-## GitHub Pages
+## Variables d environnement
 
-Le workflow `.github/workflows/static.yml` publie uniquement le frontend React sur GitHub Pages.
+node-service/.env
 
-- Le build utilise `VITE_BASE_PATH` fourni par GitHub Actions pour gerer correctement le sous-chemin du site.
-- Un `404.html` est genere pendant le deploy pour que les routes React fonctionnent aussi lors d'un acces direct.
-- Les services `backend/` et `node-service/` ne sont pas heberges par GitHub Pages et doivent etre deployes separement.
+- PORT (defaut: 4000)
+- LARAVEL_API_URL (defaut: http://localhost:8000/api)
+- FRONTEND_ORIGINS (origines CORS separees par des virgules)
 
-### Setup GitHub Pages
+frontend/.env
 
-1. Ouvrir les parametres du depot GitHub.
-2. Aller dans `Pages`.
-3. Choisir `GitHub Actions` comme source de publication.
-4. Pousser sur la branche `main` pour lancer le workflow `Deploy frontend to Pages`.
-5. Recuperer l'URL fournie par l'environnement `github-pages` apres le deploiement.
+- VITE_BASE_PATH (defaut: /)
 
-Si vous utilisez un domaine personnalise, configurez-le dans les parametres Pages apres la premiere publication.
+## Endpoints techniques
+
+- Laravel health: GET http://localhost:8000/api/health
+- Node health: GET http://localhost:4000/health
+- Node readiness: GET http://localhost:4000/ready
+- Node stack status: GET http://localhost:4000/api/status
+
+## Deploiement GitHub Pages
+
+Le workflow [static.yml](.github/workflows/static.yml) publie uniquement frontend/dist.
+
+Points importants:
+
+- VITE_BASE_PATH est injecte automatiquement.
+- 404.html et .nojekyll sont ajoutes pour supporter le routage SPA.
+- backend et node-service ne sont pas heberges sur GitHub Pages.
+
+Activation:
+
+1. Ouvrir Settings du depot.
+2. Aller dans Pages.
+3. Choisir GitHub Actions comme source.
+4. Pousser sur main.
+
+## FAQ
+
+Q: Le backend est il obligatoire pour visualiser les pages frontend?
+
+R: Non pour l affichage statique de base. Oui pour les integrations API et le statut global complet.
+
+Q: Pourquoi un endpoint ready en plus de health?
+
+R: Health verifie la disponibilite du service lui meme. Ready verifie aussi la dependance Laravel.
+
+Q: Peut on deployer tout le projet sur GitHub Pages?
+
+R: Non. Seul le frontend statique est deployable sur GitHub Pages.
+
+## Roadmap
+
+- Structurer davantage la couche frontend par modules.
+- Ajouter des tests automatises pour les flux critiques.
+- Renforcer la pipeline CI/CD multi-services.
+- Formaliser les environnements staging et production.
+
+## Contribution
+
+Les contributions sont bienvenues.
+
+1. Fork du projet.
+2. Creation d une branche de fonctionnalite.
+3. Commit des modifications.
+4. Ouverture d une pull request.
 
 ## Licence
 
-SuperEdu est distribue sous triple licence. Vous pouvez utiliser le projet sous l'une des licences suivantes:
+SuperEdu est distribue sous tri-licence:
 
-- GNU General Public License v3.0 ou version ulterieure
-- MIT License
-- Apache License 2.0
-
-Les textes correspondants se trouvent dans:
-
-- `LICENSE-GPL-3.0-or-later`
-- `LICENSE-MIT`
-- `LICENSE-APACHE-2.0`
-
-Si vous distribuez ou modifiez ce projet, vous devez respecter les conditions de la licence que vous choisissez d'appliquer.
+- GPL v3 ou ulterieure: [LICENSE-GPL-3.0-or-later](LICENSE-GPL-3.0-or-later)
+- MIT: [LICENSE-MIT](LICENSE-MIT)
+- Apache 2.0: [LICENSE-APACHE-2.0](LICENSE-APACHE-2.0)
