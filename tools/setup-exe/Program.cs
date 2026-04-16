@@ -15,10 +15,16 @@ string? FindSetupBatPath()
         while (dir is not null)
         {
             var potential = Path.Combine(dir.FullName, "setup.bat");
+            var nestedPotential = Path.Combine(dir.FullName, "setup", "setup.bat");
 
             if (File.Exists(potential))
             {
                 return potential;
+            }
+
+            if (File.Exists(nestedPotential))
+            {
+                return nestedPotential;
             }
 
             dir = dir.Parent;
@@ -37,6 +43,11 @@ if (batchPath is null)
 }
 
 var repoRoot = Path.GetDirectoryName(batchPath)!;
+
+if (Path.GetFileName(repoRoot).Equals("setup", StringComparison.OrdinalIgnoreCase))
+{
+    repoRoot = Path.GetDirectoryName(repoRoot)!;
+}
 
 var startInfo = new ProcessStartInfo
 {

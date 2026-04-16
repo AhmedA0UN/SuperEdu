@@ -1,7 +1,8 @@
 #!/usr/bin/env sh
 set -eu
 
-ROOT_DIR=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
+SETUP_DIR=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
+ROOT_DIR=$(CDPATH= cd -- "$SETUP_DIR/.." && pwd)
 
 echo "[1/4] Backend Laravel"
 cd "$ROOT_DIR/backend"

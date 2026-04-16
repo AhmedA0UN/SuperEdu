@@ -6,7 +6,7 @@ SuperEdu est organise en trois couches:
 - `node-service/` : passerelle Node.js et endpoint de supervision
 - `frontend/` : application React/Vite qui expose les interfaces legacy de Super_Edu
 
-Pour un guide de mise en route rapide, voir [SETUP.md](SETUP.md).
+Pour un guide de mise en route rapide, voir [setup/SETUP.md](setup/SETUP.md).
 
 ## Vue d'ensemble
 

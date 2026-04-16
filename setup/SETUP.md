@@ -12,9 +12,9 @@ This file gives the shortest path to get SuperEdu running locally and published 
 
 You can automate the steps with the root scripts:
 
-- `setup.bat` on Windows
-- `setup.sh` on macOS/Linux
-- `setup.exe` on Windows if you build the launcher under `tools/setup-exe/`
+- `setup/setup.bat` on Windows
+- `setup/setup.sh` on macOS/Linux
+- `setup.exe` on Windows
 
 ### 1) Backend
 

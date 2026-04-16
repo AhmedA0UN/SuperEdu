@@ -1,10 +1,10 @@
 @echo off
 setlocal enabledelayedexpansion
 
-set "ROOT=%~dp0"
+set "ROOT=%~dp0.."
 
 echo [1/4] Backend Laravel
-pushd "%ROOT%backend"
+pushd "%ROOT%\backend"
 if not exist ".env" (
   copy ".env.example" ".env" >nul
 )
@@ -13,7 +13,7 @@ findstr /R "^APP_KEY=$" ".env" >nul && call php artisan key:generate
 popd
 
 echo [2/4] Node service
-pushd "%ROOT%node-service"
+pushd "%ROOT%\node-service"
 if not exist ".env" (
   copy ".env.example" ".env" >nul
 )
@@ -21,7 +21,7 @@ call npm install
 popd
 
 echo [3/4] Frontend
-pushd "%ROOT%frontend"
+pushd "%ROOT%\frontend"
 if not exist ".env" (
   copy ".env.example" ".env" >nul
 )
