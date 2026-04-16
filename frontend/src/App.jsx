@@ -1,41 +1,42 @@
 import { Link, Navigate, Route, Routes } from 'react-router-dom'
+import { withBasePath } from './basePath'
 
 const pages = [
   {
     route: '/index',
     title: 'Plateforme Principale',
     description: 'Interface principale Super_Edu.',
-    src: '/super_edu/index.html',
+    src: withBasePath('/super_edu/index.html'),
   },
   {
     route: '/certification',
     title: 'Certification',
     description: 'Page de certification Super_Edu.',
-    src: '/super_edu/Wpages/certification.html',
+    src: withBasePath('/super_edu/Wpages/certification.html'),
   },
   {
     route: '/conseils',
     title: 'Conseils',
     description: 'Page de conseils pedagogiques.',
-    src: '/super_edu/Wpages/conseils.html',
+    src: withBasePath('/super_edu/Wpages/conseils.html'),
   },
   {
     route: '/mentor-ia',
     title: 'Mentor IA',
     description: 'Page mentor IA et accompagnement.',
-    src: '/super_edu/Wpages/mentor%20IA.html',
+    src: withBasePath('/super_edu/Wpages/mentor%20IA.html'),
   },
   {
     route: '/prototype',
     title: 'Prototype',
     description: 'Prototype d interface de Super_Edu.',
-    src: '/super_edu/Wpages/prototype.html',
+    src: withBasePath('/super_edu/Wpages/prototype.html'),
   },
   {
     route: '/weeeelcom',
     title: 'Weeeelcom',
     description: 'Page d accueil alternative.',
-    src: '/super_edu/Wpages/weeeelcom.html',
+    src: withBasePath('/super_edu/Wpages/weeeelcom.html'),
   },
 ]
 

@@ -65,7 +65,12 @@ La configuration suit le format standard Laravel. Les champs a verifier en prior
 
 - `PORT` : port HTTP du service Node, par defaut `4000`
 - `LARAVEL_API_URL` : URL de base de l'API Laravel, par defaut `http://localhost:8000/api`
-- `FRONTEND_URL` : origine autorisee pour CORS, par defaut `http://localhost:5173`
+- `FRONTEND_ORIGINS` : liste d'origines autorisees pour CORS, separees par des virgules
+- `FRONTEND_URL` : alias simple conserve pour compatibilite, par defaut `http://localhost:5173`
+
+### frontend/.env
+
+- `VITE_BASE_PATH` : base d'installation du frontend, par defaut `/`
 
 ## Endpoints
 
@@ -85,6 +90,8 @@ La configuration suit le format standard Laravel. Les champs a verifier en prior
 
 - `npm start` : lance le service Node
 - `npm run dev` : lance le service Node avec redemarrage automatique
+- `GET /health` : verifie que le service est vivant
+- `GET /ready` : verifie que Laravel est joignable avant exposition complete
 
 ## Verification rapide
 
@@ -93,6 +100,14 @@ cd frontend
 npm run build
 npm run lint
 ```
+
+## GitHub Pages
+
+Le workflow `.github/workflows/static.yml` publie uniquement le frontend React sur GitHub Pages.
+
+- Le build utilise `VITE_BASE_PATH` fourni par GitHub Actions pour gerer correctement le sous-chemin du site.
+- Un `404.html` est genere pendant le deploy pour que les routes React fonctionnent aussi lors d'un acces direct.
+- Les services `backend/` et `node-service/` ne sont pas heberges par GitHub Pages et doivent etre deployes separement.
 
 ## Licence
 
