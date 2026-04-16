@@ -14,6 +14,7 @@ You can automate the steps with the root scripts:
 
 - `setup.bat` on Windows
 - `setup.sh` on macOS/Linux
+- `setup.exe` on Windows if you build the launcher under `tools/setup-exe/`
 
 ### 1) Backend
 
