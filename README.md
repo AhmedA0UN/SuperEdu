@@ -4,22 +4,23 @@ Plateforme web educative orientee vers l apprentissage, la collaboration academi
 
 ## Sommaire
 
-- Objectif
-- Etat du projet
-- Public cible
-- Architecture
-- Fonctionnalites
-- Apercu des pages
-- Structure du depot
-- Demarrage rapide
-- Utilisation
-- Variables d environnement
-- Endpoints techniques
-- Deploiement GitHub Pages
-- FAQ
-- Roadmap
-- Contribution
-- Licence
+- [Objectif](#objectif)
+- [Etat du projet](#etat-du-projet)
+- [Public cible](#public-cible)
+- [Architecture](#architecture)
+- [Fonctionnalites](#fonctionnalites)
+- [Apercu des pages](#apercu-des-pages)
+- [Captures d ecran](#captures-d-ecran)
+- [Structure du depot](#structure-du-depot)
+- [Demarrage rapide](#demarrage-rapide)
+- [Utilisation](#utilisation)
+- [Variables d environnement](#variables-d-environnement)
+- [Endpoints techniques](#endpoints-techniques)
+- [Deploiement GitHub Pages](#deploiement-github-pages)
+- [FAQ](#faq)
+- [Roadmap](#roadmap)
+- [Contribution](#contribution)
+- [Licence](#licence)
 
 ## Objectif
 
