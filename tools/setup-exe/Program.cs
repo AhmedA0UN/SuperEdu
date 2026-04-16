@@ -1,13 +1,42 @@
 using System.Diagnostics;
 
-var repoRoot = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "..", "..", "..", ".."));
-var batchPath = Path.Combine(repoRoot, "setup.bat");
-
-if (!File.Exists(batchPath))
+string? FindSetupBatPath()
 {
-    Console.Error.WriteLine($"setup.bat not found at {batchPath}");
+    var candidates = new[]
+    {
+        Environment.CurrentDirectory,
+        AppContext.BaseDirectory,
+    };
+
+    foreach (var start in candidates)
+    {
+        var dir = new DirectoryInfo(start);
+
+        while (dir is not null)
+        {
+            var potential = Path.Combine(dir.FullName, "setup.bat");
+
+            if (File.Exists(potential))
+            {
+                return potential;
+            }
+
+            dir = dir.Parent;
+        }
+    }
+
+    return null;
+}
+
+var batchPath = FindSetupBatPath();
+
+if (batchPath is null)
+{
+    Console.Error.WriteLine("setup.bat not found from the current folder or executable folder.");
     return 1;
 }
+
+var repoRoot = Path.GetDirectoryName(batchPath)!;
 
 var startInfo = new ProcessStartInfo
 {
