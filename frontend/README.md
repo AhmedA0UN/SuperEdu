@@ -1,16 +1,32 @@
-# React + Vite
+# Frontend SuperEdu
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Cette application React/Vite sert de couche d'entree pour les pages historiques de Super_Edu conservees dans `public/super_edu/`.
 
-Currently, two official plugins are available:
+## Ce que contient le frontend
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+- Une page d'accueil React qui liste les interfaces disponibles
+- Des routes React qui chargent les pages legacy dans un `iframe`
+- Les fichiers HTML d'origine dans `public/super_edu/`
 
-## React Compiler
+## Routes exposees
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+- `/` : accueil
+- `/index` : interface principale
+- `/certification` : page de certification
+- `/conseils` : page de conseils
+- `/mentor-ia` : mentor IA
+- `/prototype` : prototype
+- `/weeeelcom` : page d'accueil alternative
 
-## Expanding the ESLint configuration
+## Scripts
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+- `npm run dev` : lance le serveur de developpement Vite
+- `npm run build` : genere le build de production
+- `npm run preview` : previsualise le build localement
+- `npm run lint` : verifie le code avec ESLint
+
+## Notes d'exploitation
+
+- Le service React suppose que le frontend est accessible sur `http://localhost:5173` en developpement.
+- Les pages legacy peuvent etre ouvertes directement depuis leur route React ou en acces direct via `public/super_edu/`.
+- `npm run build` ecrit la sortie dans `dist/`.
