@@ -6,6 +6,8 @@ SuperEdu est organise en trois couches:
 - `node-service/` : passerelle Node.js et endpoint de supervision
 - `frontend/` : application React/Vite qui expose les interfaces legacy de Super_Edu
 
+Pour un guide de mise en route rapide, voir [SETUP.md](SETUP.md).
+
 ## Vue d'ensemble
 
 Le frontend React sert d'enveloppe autour des pages historiques stockees dans `frontend/public/super_edu/` et expose les routes suivantes:
@@ -108,6 +110,16 @@ Le workflow `.github/workflows/static.yml` publie uniquement le frontend React s
 - Le build utilise `VITE_BASE_PATH` fourni par GitHub Actions pour gerer correctement le sous-chemin du site.
 - Un `404.html` est genere pendant le deploy pour que les routes React fonctionnent aussi lors d'un acces direct.
 - Les services `backend/` et `node-service/` ne sont pas heberges par GitHub Pages et doivent etre deployes separement.
+
+### Setup GitHub Pages
+
+1. Ouvrir les parametres du depot GitHub.
+2. Aller dans `Pages`.
+3. Choisir `GitHub Actions` comme source de publication.
+4. Pousser sur la branche `main` pour lancer le workflow `Deploy frontend to Pages`.
+5. Recuperer l'URL fournie par l'environnement `github-pages` apres le deploiement.
+
+Si vous utilisez un domaine personnalise, configurez-le dans les parametres Pages apres la premiere publication.
 
 ## Licence
 
