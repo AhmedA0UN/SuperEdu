@@ -22,4 +22,5 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 Route::get('/health', [SystemController::class, 'health']);
 Route::get('/status', [SystemController::class, 'status']);
+Route::get('/ai/health', [AiController::class, 'health']);
 Route::post('/ai/chat', [AiController::class, 'chat']);

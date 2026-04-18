@@ -7,6 +7,21 @@ use Tests\TestCase;
 
 class AiChatTest extends TestCase
 {
+    public function test_ai_health_endpoint_exposes_configuration_status(): void
+    {
+        config()->set('services.ai.api_key', 'test-key');
+        config()->set('services.ai.base_url', 'https://example.test/v1');
+        config()->set('services.ai.model', 'test-model');
+
+        $response = $this->getJson('/api/ai/health');
+
+        $response->assertOk();
+        $response->assertJsonPath('status', 'configured');
+        $response->assertJsonPath('configured.api_key', true);
+        $response->assertJsonPath('configured.base_url', true);
+        $response->assertJsonPath('configured.model', true);
+    }
+
     public function test_ai_chat_returns_provider_reply(): void
     {
         config()->set('services.ai.api_key', 'test-key');
@@ -56,5 +71,43 @@ class AiChatTest extends TestCase
 
         $response->assertStatus(422);
         $response->assertJsonValidationErrors(['message']);
+    }
+
+    public function test_ai_chat_forwards_history_messages(): void
+    {
+        config()->set('services.ai.api_key', 'test-key');
+        config()->set('services.ai.base_url', 'https://example.test/v1');
+
+        Http::fake([
+            'https://example.test/v1/chat/completions' => Http::response([
+                'choices' => [
+                    [
+                        'message' => [
+                            'content' => 'Réponse avec historique.',
+                        ],
+                    ],
+                ],
+            ], 200),
+        ]);
+
+        $response = $this->postJson('/api/ai/chat', [
+            'assistant' => 'superbot',
+            'message' => 'Continue la conversation',
+            'history' => [
+                ['role' => 'user', 'content' => 'Bonjour'],
+                ['role' => 'assistant', 'content' => 'Salut, comment puis-je aider ?'],
+            ],
+        ]);
+
+        $response->assertOk();
+        $response->assertJsonPath('reply', 'Réponse avec historique.');
+
+        Http::assertSent(function ($request) {
+            $messages = $request->data()['messages'] ?? [];
+
+            return collect($messages)->contains(fn ($message) => ($message['role'] ?? '') === 'user' && ($message['content'] ?? '') === 'Bonjour')
+                && collect($messages)->contains(fn ($message) => ($message['role'] ?? '') === 'assistant' && ($message['content'] ?? '') === 'Salut, comment puis-je aider ?')
+                && collect($messages)->contains(fn ($message) => ($message['role'] ?? '') === 'user' && ($message['content'] ?? '') === 'Continue la conversation');
+        });
     }
 }

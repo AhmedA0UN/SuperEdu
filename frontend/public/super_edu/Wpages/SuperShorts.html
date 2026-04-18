@@ -8,6 +8,7 @@
     <!-- Font Awesome pour les icônes -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="../config/ai-config.js"></script>
     <style>
         * {
             margin: 0;
@@ -752,6 +753,9 @@
             const aiSend = document.getElementById('aiSend');
             const aiInput = document.getElementById('aiInput');
             const aiReplies = document.getElementById('aiReplies');
+            const aiApiBase = window.SUPEREDU_AI_API_BASE || 'http://127.0.0.1:8000/api';
+            let aiFallbackNotified = false;
+            const superShortsHistory = [];
 
             toggleBtn.addEventListener('click', function(e){
                 e.stopPropagation();
@@ -815,30 +819,91 @@
                 bubble.textContent = text;
                 aiReplies.appendChild(bubble);
                 aiReplies.scrollTop = aiReplies.scrollHeight;
+
+                if (sender === 'user') {
+                    superShortsHistory.push({ role: 'user', content: String(text) });
+                } else if (sender === 'bot') {
+                    superShortsHistory.push({ role: 'assistant', content: String(text) });
+                }
+
+                if (superShortsHistory.length > 10) {
+                    superShortsHistory.splice(0, superShortsHistory.length - 10);
+                }
+            }
+
+            async function requestAiReply(question) {
+                try {
+                    const response = await fetch(`${aiApiBase}/ai/chat`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Accept': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            assistant: 'superbot',
+                            message: question,
+                            context: {
+                                source: 'supershorts-page',
+                            },
+                            history: superShortsHistory,
+                        }),
+                    });
+
+                    const data = await response.json();
+                    if (!response.ok) {
+                        throw new Error(data.message || 'AI unavailable');
+                    }
+
+                    if (typeof data.reply === 'string' && data.reply.trim() !== '') {
+                        return data.reply.trim();
+                    }
+                } catch (_error) {
+                    return null;
+                }
+
+                return null;
+            }
+
+            function localAiReply(question) {
+                const q = question.toLowerCase();
+
+                if (q.includes('pointeur') || q.includes('c ')) {
+                    return 'Les pointeurs en C stockent l\'adresse d\'une variable. Ils permettent de manipuler la mémoire et de gérer des structures dynamiques.';
+                }
+                if (q.includes('fiche') || q.includes('révision') || q.includes('revision')) {
+                    return 'Fiche de révision : 1) Concepts clés, 2) Formules importantes, 3) Exemple, 4) Pièges fréquents, 5) Quiz express.';
+                }
+
+                return 'SuperBot réfléchit… Je peux t\'aider à comprendre le cours, préparer une fiche de révision ou construire un mini quiz.';
             }
 
             explainPointersBtn.addEventListener('click', function(){
-                addAiBubble('Explique-moi les pointeurs en C', 'user');
-                setTimeout(() => {
-                    addAiBubble('Les pointeurs en C stockent l’adresse d’une variable. Ils permettent de manipuler directement la mémoire et de créer des structures dynamiques comme les tableaux et les listes liées.', 'bot');
-                }, 300);
+                aiInput.value = 'Explique-moi les pointeurs en C';
+                aiSend.click();
             });
 
             revisionSheetBtn.addEventListener('click', function(){
-                addAiBubble('Prépare une fiche de révision rapide', 'user');
-                setTimeout(() => {
-                    addAiBubble('Fiche de révision : 1) Concepts clés, 2) Formules importantes, 3) Conseils d’application, 4) Quiz express. Prêt à l’utiliser en 2 min.', 'bot');
-                }, 300);
+                aiInput.value = 'Prépare une fiche de révision rapide';
+                aiSend.click();
             });
 
-            aiSend.addEventListener('click', function(){
+            aiSend.addEventListener('click', async function(){
                 const question = aiInput.value.trim();
                 if (!question) return;
                 addAiBubble(question, 'user');
                 aiInput.value = '';
-                setTimeout(() => {
-                    addAiBubble('SuperBot réfléchit… Voici une réponse claire à ta question : ' + question, 'bot');
-                }, 400);
+
+                aiSend.disabled = true;
+                const aiReply = await requestAiReply(question);
+                const reply = aiReply || localAiReply(question);
+
+                if (!aiReply && !aiFallbackNotified) {
+                    aiFallbackNotified = true;
+                    alert('Backend AI indisponible. Mode local activé pour cette page.');
+                }
+
+                addAiBubble(reply, 'bot');
+                aiSend.disabled = false;
             });
 
             aiInput.addEventListener('keydown', function(event) {

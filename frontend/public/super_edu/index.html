@@ -7,6 +7,7 @@
     <link rel="icon" type="image/x-icon" href="src/i1.png">
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <script src="config/ai-config.js"></script>
     <style>
         /* ===== VARIABLES & RESET ===== */
         :root {
@@ -4288,7 +4289,32 @@
             showNotification('Backend AI indisponible: mode local actif. Configure AI_API_KEY pour activer la vraie IA.');
         }
 
-        async function requestAiReply(message, assistant, context = {}) {
+        function buildAiHistory(messages, limit = 8) {
+            if (!Array.isArray(messages)) {
+                return [];
+            }
+
+            return messages
+                .slice(-limit)
+                .map((item) => {
+                    if (!item || typeof item.text !== 'string') {
+                        return null;
+                    }
+
+                    if (item.sender === 'user') {
+                        return { role: 'user', content: item.text };
+                    }
+
+                    if (item.sender === 'bot') {
+                        return { role: 'assistant', content: item.text };
+                    }
+
+                    return null;
+                })
+                .filter(Boolean);
+        }
+
+        async function requestAiReply(message, assistant, context = {}, history = []) {
             try {
                 const response = await fetch(`${superEduAiApiBase}/ai/chat`, {
                     method: 'POST',
@@ -4300,6 +4326,7 @@
                         message,
                         assistant,
                         context,
+                        history,
                     }),
                 });
 
@@ -4372,10 +4399,11 @@
                 return;
             }
 
+            const superBotHistory = buildAiHistory(loadSuperBotHistory());
             const aiReply = await requestAiReply(text, 'superbot', {
                 source: 'dashboard',
                 page: 'pour-toi',
-            });
+            }, superBotHistory);
             const usedFallback = !aiReply;
             const reply = aiReply || superBotReply(text);
             appendSuperBotExchange(text, reply);
@@ -5914,10 +5942,11 @@
             showNotification('Veuillez écrire un message pour le mentor.');
             return;
         }
+        const mentorHistory = buildAiHistory(getMentorHistory());
         const aiReply = await requestAiReply(trimmed, 'mentor', {
             source: 'interactive-module',
             page: 'mentor-ia',
-        });
+        }, mentorHistory);
         const usedFallback = !aiReply;
         const reply = aiReply || mentorReply(trimmed);
         appendMentorExchange(trimmed, reply);

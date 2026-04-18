@@ -8,7 +8,7 @@ use RuntimeException;
 
 class ChatService
 {
-    public function respond(string $message, string $assistant = 'general', array $context = []): array
+    public function respond(string $message, string $assistant = 'general', array $context = [], array $history = []): array
     {
         $config = config('services.ai');
         $apiKey = $config['api_key'] ?? null;
@@ -35,6 +35,10 @@ class ChatService
                 'role' => 'system',
                 'content' => 'Contexte applicatif: ' . json_encode($context, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES),
             ];
+        }
+
+        foreach ($this->sanitizeHistory($history) as $item) {
+            $messages[] = $item;
         }
 
         $messages[] = [
@@ -99,5 +103,33 @@ class ChatService
         $message = data_get($response->json(), 'error.message') ?: 'Le service AI est temporairement indisponible.';
 
         throw new RuntimeException(sprintf('%s (HTTP %d)', $message, $status));
+    }
+
+    private function sanitizeHistory(array $history): array
+    {
+        $normalized = [];
+
+        foreach (array_slice($history, -10) as $item) {
+            if (!is_array($item)) {
+                continue;
+            }
+
+            $role = (string) ($item['role'] ?? '');
+            $content = trim((string) ($item['content'] ?? ''));
+            if ($content === '') {
+                continue;
+            }
+
+            if (!in_array($role, ['user', 'assistant'], true)) {
+                continue;
+            }
+
+            $normalized[] = [
+                'role' => $role,
+                'content' => mb_substr($content, 0, 4000),
+            ];
+        }
+
+        return $normalized;
     }
 }

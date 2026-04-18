@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Best Learning – SuperEdu</title>
   <link rel="icon" type="image/x-icon" href="src/i1.png">
+  <script src="../config/ai-config.js"></script>
   <style>
     * {
       margin: 0;
@@ -682,16 +683,37 @@
     });
 
     // ---- Module 4 : Chatbot Mentor IA ----
+    const aiApiBase = window.SUPEREDU_AI_API_BASE || 'http://127.0.0.1:8000/api';
+    let aiFallbackNotified = false;
     const chatMessages = document.getElementById('chatMessages');
     const userInput = document.getElementById('userMessageInput');
     const sendBtn = document.getElementById('sendMessageBtn');
+    const mentorHistory = [];
+
+    function escapeHtml(value) {
+      return String(value || '')
+        .replaceAll('&', '&amp;')
+        .replaceAll('<', '&lt;')
+        .replaceAll('>', '&gt;')
+        .replaceAll('"', '&quot;');
+    }
 
     function addMessage(text, sender) {
       const msgDiv = document.createElement('div');
       msgDiv.className = `message ${sender}`;
-      msgDiv.innerHTML = `<div class="bubble">${text}</div>`;
+      msgDiv.innerHTML = `<div class="bubble">${escapeHtml(text).replace(/\n/g, '<br>')}</div>`;
       chatMessages.appendChild(msgDiv);
       chatMessages.scrollTop = chatMessages.scrollHeight;
+
+      if (sender === 'user') {
+        mentorHistory.push({ role: 'user', content: String(text) });
+      } else if (sender === 'bot') {
+        mentorHistory.push({ role: 'assistant', content: String(text) });
+      }
+
+      if (mentorHistory.length > 10) {
+        mentorHistory.splice(0, mentorHistory.length - 10);
+      }
     }
 
     function botReply(userMsg) {
@@ -702,19 +724,66 @@
       else if (msg.includes('orientation') || msg.includes('métier')) reply = "Excellent ! Pense à utiliser le module 3 pour une simulation personnalisée. Sinon, dis-moi quel domaine t'intéresse.";
       else if (msg.includes('lacune') || msg.includes('difficulté')) reply = "Le module 1 peut détecter tes points faibles. Veux-tu que je te guide vers un quiz adapté ?";
       else reply = "Je suis là pour t'accompagner. Dis-moi ce qui te préoccupe (stress, révisions, orientation, lacunes) et je t'aiderai.";
-      setTimeout(() => addMessage('🤖 ' + reply, 'bot'), 400);
+      return '🤖 ' + reply;
     }
 
-    sendBtn.addEventListener('click', () => {
+    async function fetchAiReply(message) {
+      try {
+        const response = await fetch(`${aiApiBase}/ai/chat`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+          },
+          body: JSON.stringify({
+            assistant: 'mentor',
+            message,
+            context: {
+              source: 'mentor-ia-page',
+            },
+            history: mentorHistory,
+          }),
+        });
+
+        const data = await response.json();
+        if (!response.ok) {
+          throw new Error(data.message || 'AI unavailable');
+        }
+
+        if (typeof data.reply === 'string' && data.reply.trim() !== '') {
+          return data.reply.trim();
+        }
+      } catch (_error) {
+        return null;
+      }
+
+      return null;
+    }
+
+    async function sendMentorMessage() {
       const text = userInput.value.trim();
       if (!text) return;
+
       addMessage(text, 'user');
       userInput.value = '';
-      botReply(text);
-    });
+
+      sendBtn.disabled = true;
+      const aiReply = await fetchAiReply(text);
+      const reply = aiReply || botReply(text);
+
+      if (!aiReply && !aiFallbackNotified) {
+        aiFallbackNotified = true;
+        alert('Backend AI indisponible. Mode local activé pour cette page.');
+      }
+
+      addMessage(reply, 'bot');
+      sendBtn.disabled = false;
+    }
+
+    sendBtn.addEventListener('click', sendMentorMessage);
 
     userInput.addEventListener('keypress', (e) => {
-      if (e.key === 'Enter') sendBtn.click();
+      if (e.key === 'Enter') sendMentorMessage();
     });
 
     // Lien rapide depuis hero

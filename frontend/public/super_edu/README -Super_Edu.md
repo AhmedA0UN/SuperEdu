@@ -136,6 +136,18 @@ Puis ouvrir : `http://localhost:8080`
 - `config/` : fichiers de configuration additionnels.
 - `Wpages/` : pages web secondaires et prototypes.
 
+## Configuration IA frontend
+
+- Le point de terminaison API AI est centralisé dans `config/ai-config.js`.
+- Valeur par défaut: `http://127.0.0.1:8000/api`.
+- Vous pouvez surcharger sans modifier le code:
+
+```js
+localStorage.setItem('SUPEREDU_AI_API_BASE', 'http://votre-backend/api')
+```
+
+- Les interfaces IA de `index.html`, `Wpages/mentor IA.html` et `Wpages/SuperShorts.html` utilisent cette configuration commune.
+
 ## Deploiement
 
 Ce projet peut etre deployee sur n'importe quel hebergement statique.
