@@ -75,3 +75,4 @@ Le workflow injecte `VITE_BASE_PATH`, cree `404.html` et ajoute `.nojekyll` pour
 - `PORT` (defaut: `4000`)
 - `LARAVEL_API_URL` (defaut: `http://localhost:8000/api`)
 - `FRONTEND_ORIGINS` (origines CORS separees par des virgules)
+
