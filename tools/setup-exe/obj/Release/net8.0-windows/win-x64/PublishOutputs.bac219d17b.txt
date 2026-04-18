@@ -1,0 +1,2 @@
+C:\Users\Mega-PC\Documents\vs projets\GIT\SuperEdu\tools\setup-exe\publish\setup.pdb
+C:\Users\Mega-PC\Documents\vs projets\GIT\SuperEdu\tools\setup-exe\publish\setup.exe
