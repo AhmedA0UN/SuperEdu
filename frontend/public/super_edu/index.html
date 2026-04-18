@@ -4221,6 +4221,8 @@
         document.addEventListener('DOMContentLoaded', function() {
             renderPfaProjects();
         });
+        const superEduAiApiBase = window.SUPEREDU_AI_API_BASE || 'http://127.0.0.1:8000/api';
+        let aiFallbackNotified = false;
         const superBotChatKey = 'superedu_superbot_chat_history';
 
         function normalizeAiText(text) {
@@ -4277,6 +4279,41 @@
             renderSuperBotHistory();
         }
 
+        function notifyAiFallback() {
+            if (aiFallbackNotified) {
+                return;
+            }
+
+            aiFallbackNotified = true;
+            showNotification('Backend AI indisponible: mode local actif. Configure AI_API_KEY pour activer la vraie IA.');
+        }
+
+        async function requestAiReply(message, assistant, context = {}) {
+            try {
+                const response = await fetch(`${superEduAiApiBase}/ai/chat`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        message,
+                        assistant,
+                        context,
+                    }),
+                });
+
+                const data = await response.json();
+                if (!response.ok) {
+                    throw new Error(data.message || 'Le service AI est indisponible.');
+                }
+
+                return data.reply || '';
+            } catch (error) {
+                return null;
+            }
+        }
+
         function superBotReply(userMsg) {
             const message = normalizeAiText(userMsg);
 
@@ -4327,7 +4364,7 @@
             sendAIMessage(prompts[topic] || 'Donne-moi un conseil précis pour progresser aujourd’hui.');
         }
 
-        function sendAIMessage(forcedText) {
+        async function sendAIMessage(forcedText) {
             const input = document.getElementById('aiInput');
             const text = (forcedText ?? input?.value ?? '').trim();
             if (!text) {
@@ -4335,8 +4372,17 @@
                 return;
             }
 
-            const reply = superBotReply(text);
+            const aiReply = await requestAiReply(text, 'superbot', {
+                source: 'dashboard',
+                page: 'pour-toi',
+            });
+            const usedFallback = !aiReply;
+            const reply = aiReply || superBotReply(text);
             appendSuperBotExchange(text, reply);
+
+            if (usedFallback) {
+                notifyAiFallback();
+            }
 
             if (input) {
                 input.value = '';
@@ -5862,14 +5908,23 @@
         }, 250);
     }
 
-    function sendMentorMessage(text) {
+    async function sendMentorMessage(text) {
         const trimmed = (text || '').trim();
         if (!trimmed) {
             showNotification('Veuillez écrire un message pour le mentor.');
             return;
         }
-        const reply = mentorReply(trimmed);
+        const aiReply = await requestAiReply(trimmed, 'mentor', {
+            source: 'interactive-module',
+            page: 'mentor-ia',
+        });
+        const usedFallback = !aiReply;
+        const reply = aiReply || mentorReply(trimmed);
         appendMentorExchange(trimmed, reply);
+
+        if (usedFallback) {
+            notifyAiFallback();
+        }
     }
     chatSend.addEventListener('click', () => {
         const txt = chatInp.value.trim();

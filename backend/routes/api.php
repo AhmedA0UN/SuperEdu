@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\AiController;
 use App\Http\Controllers\Api\SystemController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -21,3 +22,4 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 Route::get('/health', [SystemController::class, 'health']);
 Route::get('/status', [SystemController::class, 'status']);
+Route::post('/ai/chat', [AiController::class, 'chat']);
