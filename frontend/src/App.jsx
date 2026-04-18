@@ -57,14 +57,52 @@ function LegacyFrame({ title, src }) {
 function HomePage() {
   return (
     <main className="home">
-      <header className="hero">
-        <p className="eyebrow">Super_Edu Production</p>
-        <h1>Node.js + React.js + Laravel</h1>
-        <p>
-          Memes composantes et memes interfaces de Super_Edu, encapsulees dans une
-          architecture production moderne.
-        </p>
+      <header className="hero hero-superbot">
+        <p className="eyebrow">Interface IA</p>
+        <h1>SuperBot IA</h1>
+        <p>Assistant pedagogique en direct pour les revisions, le debug et les quiz.</p>
       </header>
+
+      <section className="superbot-card" aria-label="Assistant SuperBot IA">
+        <div className="superbot-header">
+          <div className="superbot-avatar" aria-hidden="true">🤖</div>
+          <div>
+            <h2>SuperBot IA</h2>
+            <p className="superbot-status">
+              <span className="status-dot" aria-hidden="true" /> En ligne · Pret a aider
+            </p>
+          </div>
+        </div>
+
+        <div className="superbot-message-box">
+          <p className="superbot-message">
+            🎓 Bonjour Ahmed ! Je vois que tu progresses bien sur les Design Patterns.
+            Veux-tu que je t&apos;explique le Pattern Observer ?
+          </p>
+
+          <div className="superbot-suggestions">
+            <button type="button" className="chip">❓ Explique Observer</button>
+            <button type="button" className="chip">📄 Fiche Revision</button>
+            <button type="button" className="chip">🧩 Debug Code</button>
+            <button type="button" className="chip">❔ Quiz</button>
+            <button type="button" className="chip">••• Avance</button>
+          </div>
+        </div>
+
+        <div className="superbot-input-row">
+          <input
+            type="text"
+            placeholder="Pose ta question a SuperBot..."
+            aria-label="Question pour SuperBot"
+          />
+          <button type="button" className="icon-btn" aria-label="Demarrer la saisie vocale">
+            🎤
+          </button>
+          <button type="button" className="icon-btn" aria-label="Envoyer le message">
+            📨
+          </button>
+        </div>
+      </section>
 
       <section className="grid">
         {pages.map((page) => (

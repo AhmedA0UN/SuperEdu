@@ -80,6 +80,10 @@ a {
   color: #cbd5e1;
 }
 
+.hero-superbot {
+  background: radial-gradient(circle at 10% 10%, #1e3a8a 0%, #172554 45%, #0f172a 100%);
+}
+
 .eyebrow {
   display: inline-block;
   margin: 0;
@@ -96,6 +100,130 @@ a {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
   gap: 16px;
+}
+
+.superbot-card {
+  margin-top: 22px;
+  background: linear-gradient(150deg, #0a1330 0%, #0e1b43 58%, #0f234f 100%);
+  border: 1px solid rgba(56, 189, 248, 0.34);
+  border-radius: 34px;
+  padding: 26px;
+  color: #dbeafe;
+  box-shadow: 0 20px 48px rgba(4, 12, 33, 0.42);
+}
+
+.superbot-header {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 18px;
+}
+
+.superbot-avatar {
+  width: 72px;
+  height: 72px;
+  border-radius: 24px;
+  background: linear-gradient(145deg, #3b82f6, #a78bfa);
+  display: grid;
+  place-items: center;
+  font-size: 34px;
+  box-shadow: 0 10px 25px rgba(59, 130, 246, 0.35);
+}
+
+.superbot-header h2 {
+  margin: 0;
+  color: #ffffff;
+  font-size: clamp(1.4rem, 2vw, 2rem);
+}
+
+.superbot-status {
+  margin: 6px 0 0;
+  color: #93c5fd;
+  font-size: 0.96rem;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.status-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #10b981;
+  box-shadow: 0 0 0 6px rgba(16, 185, 129, 0.22);
+}
+
+.superbot-message-box {
+  border: 1px solid rgba(56, 189, 248, 0.32);
+  border-radius: 22px;
+  padding: 16px;
+  background: rgba(8, 20, 52, 0.6);
+}
+
+.superbot-message {
+  margin: 0;
+  font-size: clamp(1rem, 1.5vw, 1.18rem);
+  line-height: 1.55;
+  color: #dbeafe;
+}
+
+.superbot-suggestions {
+  margin-top: 14px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.chip {
+  border: 1px solid rgba(56, 189, 248, 0.45);
+  border-radius: 999px;
+  padding: 8px 14px;
+  background: linear-gradient(180deg, rgba(14, 47, 101, 0.9), rgba(10, 32, 74, 0.9));
+  color: #93c5fd;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: transform 0.2s ease, border-color 0.2s ease;
+}
+
+.chip:hover {
+  transform: translateY(-1px);
+  border-color: #7dd3fc;
+}
+
+.superbot-input-row {
+  margin-top: 18px;
+  display: grid;
+  grid-template-columns: 1fr auto auto;
+  gap: 10px;
+}
+
+.superbot-input-row input {
+  border-radius: 999px;
+  border: 1px solid rgba(56, 189, 248, 0.35);
+  background: rgba(7, 15, 38, 0.95);
+  color: #c7e0ff;
+  padding: 12px 16px;
+  font-size: 1.02rem;
+}
+
+.superbot-input-row input::placeholder {
+  color: #7ea7d9;
+}
+
+.icon-btn {
+  border: 0;
+  width: 50px;
+  height: 50px;
+  border-radius: 999px;
+  background: linear-gradient(145deg, #22d3ee, #38bdf8);
+  color: #05224f;
+  cursor: pointer;
+  font-size: 1.25rem;
+  font-weight: 700;
+}
+
+.icon-btn:hover {
+  filter: brightness(1.08);
 }
 
 .card {
@@ -159,4 +287,26 @@ a {
   border: 0;
   width: 100%;
   height: 100%;
+}
+
+@media (max-width: 720px) {
+  .superbot-card {
+    border-radius: 24px;
+    padding: 18px;
+  }
+
+  .superbot-avatar {
+    width: 60px;
+    height: 60px;
+    border-radius: 20px;
+    font-size: 28px;
+  }
+
+  .superbot-input-row {
+    grid-template-columns: 1fr;
+  }
+
+  .icon-btn {
+    width: 100%;
+  }
 }
