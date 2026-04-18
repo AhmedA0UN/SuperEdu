@@ -704,9 +704,9 @@
                         </div>
                     </div>
                     <div class="right-sidebar">
-                        <div class="widget ai-widget"><div class="ai-header"><div class="ai-avatar"><i class="fas fa-robot"></i></div><div><h3 style="color:white;margin-bottom:6px;">SuperBot IA</h3><div class="ai-status"><span class="ai-status-dot"></span><span style="color:var(--accent-light);font-size:12px;">En ligne · Prêt à aider</span></div></div></div><div class="ai-message-box"><div class="ai-message"><i class="fas fa-graduation-cap" style="color:var(--accent);margin-right:8px;"></i>Bonjour Ahmed ! Je vois que tu progresses bien sur les Design Patterns. Veux-tu que je t'explique le Pattern Observer ?</div><div class="ai-suggestions"><span class="ai-suggestion-chip" onclick="showNotification('SuperBot explique le Pattern Observer...')"><i class="fas fa-question"></i> Explique Observer</span><span class="ai-suggestion-chip" onclick="showNotification('Génération de fiche de révision...')"><i class="fas fa-file"></i> Fiche Révision</span><span class="ai-suggestion-chip" onclick="showNotification('Analyse de code en cours...')"><i class="fas fa-code"></i> Debug Code</span><span class="ai-suggestion-chip" onclick="showNotification('Création de quiz personnalisé...')">
+                        <div class="widget ai-widget"><div class="ai-header"><div class="ai-avatar"><i class="fas fa-robot"></i></div><div><h3 style="color:white;margin-bottom:6px;">SuperBot IA</h3><div class="ai-status"><span class="ai-status-dot"></span><span style="color:var(--accent-light);font-size:12px;">En ligne · Prêt à aider</span></div></div></div><div class="ai-message-box"><div class="ai-message"><i class="fas fa-graduation-cap" style="color:var(--accent);margin-right:8px;"></i>Bonjour Ahmed ! Je vois que tu progresses bien sur les Design Patterns. Veux-tu que je t'explique le Pattern Observer ?</div><div class="ai-suggestions"><span class="ai-suggestion-chip" onclick="superBotQuickPrompt('observer')"><i class="fas fa-question"></i> Explique Observer</span><span class="ai-suggestion-chip" onclick="superBotQuickPrompt('revision')"><i class="fas fa-file"></i> Fiche Révision</span><span class="ai-suggestion-chip" onclick="superBotQuickPrompt('debug')"><i class="fas fa-code"></i> Debug Code</span><span class="ai-suggestion-chip" onclick="superBotQuickPrompt('quiz')">
                                         <i class="fas fa-question-circle"></i> Quiz
-                                    </span><span class="ai-suggestion-chip" onclick="showNotification('Ouverture du menu d\'autres options plus avancées ...')">
+                                    </span><span class="ai-suggestion-chip" onclick="superBotQuickPrompt('advanced')">
                                         <i class="fas fa-ellipsis-h"></i> Avancé
                                     </span></div></div><div class="ai-input"><input type="text" placeholder="Pose ta question à SuperBot..." id="aiInput"><button onclick="startVoiceInput()"><i class="fas fa-microphone"></i></button><button onclick="sendAIMessage()"><i class="fas fa-paper-plane"></i></button></div></div>
                         <div class="widget"><div class="widget-title"><i class="fas fa-users"></i><span>Espaces Collaboration</span></div><div class="collab-list"><div class="collab-room"><div class="room-info"><div class="room-icon"><i class="fas fa-laptop-code"></i></div><div class="room-details"><h4>Projet Architecture Logicielle</h4><p>8 étudiants · Dr. Ben Ali</p></div></div><div class="online-indicator"><span class="online-dot"></span><span style="font-size:12px;color:var(--text-muted);">4</span></div><button class="join-btn" onclick="showNotification('Rejoindre la session...')">Rejoindre</button></div><div class="collab-room"><div class="room-info"><div class="room-icon"><i class="fas fa-chart-bar"></i></div><div class="room-details"><h4>Révision Macroéconomie</h4><p>12 étudiants · Pr. Mansour</p></div></div><div class="online-indicator"><span class="online-dot"></span><span style="font-size:12px;color:var(--text-muted);">7</span></div><button class="join-btn" onclick="showNotification('Rejoindre la session...')">Rejoindre</button></div></div><button class="btn-primary" style="width:100%;margin-top:16px;" onclick="showNotification('Création d\'un nouvel espace...')"><i class="fas fa-plus"></i> Créer un espace</button></div>
@@ -4221,28 +4221,128 @@
         document.addEventListener('DOMContentLoaded', function() {
             renderPfaProjects();
         });
-        function sendAIMessage() {
-            const input = document.getElementById('aiInput');
+        const superBotChatKey = 'superedu_superbot_chat_history';
+
+        function normalizeAiText(text) {
+            return String(text || '')
+                .toLowerCase()
+                .normalize('NFD')
+                .replace(/[\u0300-\u036f]/g, '');
+        }
+
+        function escapeAiHtml(text) {
+            return String(text || '')
+                .replaceAll('&', '&amp;')
+                .replaceAll('<', '&lt;')
+                .replaceAll('>', '&gt;')
+                .replaceAll('"', '&quot;');
+        }
+
+        function loadSuperBotHistory() {
+            try {
+                return JSON.parse(localStorage.getItem(superBotChatKey) || '[]');
+            } catch (error) {
+                return [];
+            }
+        }
+
+        function saveSuperBotHistory(history) {
+            localStorage.setItem(superBotChatKey, JSON.stringify(history.slice(-20)));
+        }
+
+        function renderSuperBotHistory() {
             const preview = document.getElementById('chatPreview');
-            const text = input.value.trim();
+            if (!preview) return;
+
+            const history = loadSuperBotHistory();
+            const timeline = history.length ? history : [{ sender: 'bot', text: 'Bonjour Ahmed ! Pose-moi une question sur les cours, les révisions ou le debug.' }];
+
+            preview.style.display = 'grid';
+            preview.style.gap = '8px';
+            preview.innerHTML = timeline.map((item) => {
+                const isBot = item.sender === 'bot';
+                const background = isBot ? '#e0f2fe' : '#0f172a';
+                const color = isBot ? '#0f172a' : '#ffffff';
+                const label = isBot ? 'SuperBot' : 'Vous';
+
+                return `<div style="padding:10px 12px; border-radius:12px; background:${background}; color:${color}; line-height:1.55;"><strong>${label} :</strong> ${escapeAiHtml(item.text).replace(/\n/g, '<br>')}</div>`;
+            }).join('');
+        }
+
+        function appendSuperBotExchange(userText, botText) {
+            const history = loadSuperBotHistory();
+            history.push({ sender: 'user', text: userText, timestamp: new Date().toISOString() });
+            history.push({ sender: 'bot', text: botText, timestamp: new Date().toISOString() });
+            saveSuperBotHistory(history);
+            renderSuperBotHistory();
+        }
+
+        function superBotReply(userMsg) {
+            const message = normalizeAiText(userMsg);
+
+            if (message.includes('observer') || message.includes('design pattern') || message.includes('pattern')) {
+                return "Le Pattern Observer sert à prévenir automatiquement plusieurs objets quand un état change.\n\nExemple simple : un canal Telegram publie une annonce et tous les abonnés la reçoivent.\n\nSi tu veux, je peux aussi te donner un schéma UML ou un mini quiz.";
+            }
+
+            if (message.includes('debug') || message.includes('bug') || message.includes('erreur') || message.includes('code')) {
+                return "Envoie-moi le code, le message d'erreur et ce que tu attendais.\nJe vais d'abord repérer la cause probable, puis te proposer un correctif étape par étape.";
+            }
+
+            if (message.includes('quiz') || message.includes('test') || message.includes('question')) {
+                return "Je peux générer un quiz rapide en 3 niveaux : compréhension, application et défi.\nDis-moi la matière ou le chapitre, et je te prépare la série de questions.";
+            }
+
+            if (message.includes('fiche') || message.includes('revision') || message.includes('résumé')) {
+                return "Voici la structure idéale d'une fiche de révision :\n1. Définition simple\n2. Formules ou règles clés\n3. Exemple concret\n4. Erreurs fréquentes\n5. Mini-exercice pour vérifier la compréhension.";
+            }
+
+            if (message.includes('stress') || message.includes('anxiete') || message.includes('fatigue') || message.includes('pression')) {
+                return "Pause 1 minute : inspire 4 secondes, expire 6 secondes.\nEnsuite, choisis une seule tâche de 10 minutes.\nSi tu veux, je peux te construire un plan de reprise très court pour aujourd'hui.";
+            }
+
+            if (message.includes('orientation') || message.includes('metier') || message.includes('carriere') || message.includes('emploi')) {
+                return "Pour clarifier ton orientation, donne-moi : ton domaine préféré, les matières que tu aimes, et le type de travail que tu veux faire.\nJe te renverrai un profil métier cohérent avec un plan de progression.";
+            }
+
+            if (message.includes('cv') || message.includes('entretien') || message.includes('stage')) {
+                return "Je peux t'aider à structurer un CV, préparer un entretien et formuler tes points forts.\nDonne-moi ton profil et je te propose une version claire et professionnelle.";
+            }
+
+            if (message.includes('plan') || message.includes('temps') || message.includes('planning') || message.includes('organisation')) {
+                return "Je peux te proposer un planning en 3 blocs : focus, exercices, et révision finale.\nDis-moi tes disponibilités et je te fais un planning réaliste.";
+            }
+
+            return "Je peux t'aider sur les révisions, le debug, l'orientation, le planning ou le stress.\nDis-moi simplement ton objectif et je te donne une réponse adaptée.";
+        }
+
+        function superBotQuickPrompt(topic) {
+            const prompts = {
+                observer: 'Explique-moi le Pattern Observer avec un exemple simple.',
+                revision: 'Prépare-moi une fiche de révision rapide sur ce chapitre.',
+                debug: 'Aide-moi à déboguer ce code étape par étape.',
+                quiz: 'Crée un quiz de 5 questions avec correction.',
+                advanced: 'Propose une stratégie d’apprentissage avancée et adaptée à mon niveau.'
+            };
+
+            sendAIMessage(prompts[topic] || 'Donne-moi un conseil précis pour progresser aujourd’hui.');
+        }
+
+        function sendAIMessage(forcedText) {
+            const input = document.getElementById('aiInput');
+            const text = (forcedText ?? input?.value ?? '').trim();
             if (!text) {
                 showNotification('Veuillez entrer une question pour SuperBot.');
                 return;
             }
 
-            const lower = text.toLowerCase();
-            let reply = 'Je peux vous aider sur les révisions, l’orientation, le stress ou la planification. Reformulez votre besoin si nécessaire.';
-            if (lower.includes('stress') || lower.includes('anxiété')) reply = 'Respirez lentement pendant 30 secondes puis définissez une petite action réalisable maintenant.';
-            else if (lower.includes('révision') || lower.includes('cours')) reply = 'Dites-moi la matière et la date de l’examen, je vous prépare un plan de révision précis.';
-            else if (lower.includes('orientation') || lower.includes('métier')) reply = 'Décrivez votre objectif métier et vos compétences actuelles, je vous aiderai à clarifier la suite.';
-            else if (lower.includes('cv') || lower.includes('entretien')) reply = 'Le module Simulation peut générer un CV et une roadmap, et je peux aussi vous aider à formuler vos points forts.';
+            const reply = superBotReply(text);
+            appendSuperBotExchange(text, reply);
 
-            if (preview) {
-                preview.innerHTML = `<div style="margin-bottom:8px;"><strong>Vous:</strong> ${text}</div><div style="background:#10b981; color:white; padding:8px; border-radius:8px;"><strong>IA:</strong> ${reply}</div>`;
+            if (input) {
+                input.value = '';
             }
-            input.value = '';
-            showNotification('Réponse IA générée !');
         }
+
         function startVoiceInput(targetId = 'aiInput') {
             if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
                 showNotification('La reconnaissance vocale n\'est pas supportée par votre navigateur.');
@@ -4261,6 +4361,9 @@
                 const transcript = event.results[0][0].transcript;
                 const target = document.getElementById(targetId);
                 if (target) target.value = transcript;
+                if (targetId === 'aiInput') {
+                    sendAIMessage(transcript);
+                }
                 showNotification('Message vocal reconnu: "' + transcript + '"');
             };
             
@@ -4274,6 +4377,7 @@
             
             recognition.start();
         }
+        renderSuperBotHistory();
         document.getElementById('modal').addEventListener('click', function(e) { if(e.target === this) closeModal(); });
         document.querySelectorAll('.video-card').forEach(card => card.addEventListener('click', function(e) { if(!e.target.closest('.join-btn') && !e.target.closest('.btn-primary')) showNotification(`Lecture de "${this.querySelector('.video-title')?.textContent || 'Vidéo'}" en cours...`); }));
         document.querySelectorAll('.video-bookmark').forEach(b => b.addEventListener('click', function(e) { e.stopPropagation(); const i = this.querySelector('i'); if(i.classList.contains('far')) { i.classList.remove('far'); i.classList.add('fas'); showNotification('Vidéo ajoutée aux favoris'); } else { i.classList.remove('fas'); i.classList.add('far'); showNotification('Vidéo retirée des favoris'); } }));
@@ -5726,31 +5830,27 @@
     function addMsg(text, sender) {
         const d = document.createElement('div');
         d.className = `message ${sender}`;
-        d.innerHTML = `<div class="bubble">${sanitizeMentorText(text)}</div>`;
+        d.innerHTML = `<div class="bubble">${sanitizeMentorText(text).replace(/\n/g, '<br>')}</div>`;
         chatDiv.appendChild(d);
         chatDiv.scrollTop = chatDiv.scrollHeight;
     }
 
     function mentorReply(userMsg) {
-        const message = userMsg.toLowerCase();
+        const message = normalizeAiText(userMsg);
+
         const responses = [
-            { keywords: ['stress', 'anxiété', 'angoisse', 'panique'], reply: "Respire 4 secondes, expire 6 secondes, puis note une seule action simple à faire maintenant. Si tu veux, je peux te faire un plan anti-stress de 10 minutes." },
-            { keywords: ['révision', 'cours', 'exam', 'examen', 'quiz'], reply: "Je peux te proposer un plan de révision ciblé. Donne-moi la matière, la date de l'examen et ton niveau actuel." },
-            { keywords: ['orientation', 'métier', 'emploi', 'carrière'], reply: "Je peux t'aider à clarifier ton parcours. Décris ton domaine, ton objectif et les compétences que tu veux valoriser." },
-            { keywords: ['temps', 'organisation', 'planning', 'agenda'], reply: "On peut construire un planning hebdomadaire avec blocs de travail, pauses et révision espacée. Dis-moi tes heures disponibles." },
-            { keywords: ['motivation', 'fatigue', 'baisse', 'découragé'], reply: "Commence par une tâche de 5 minutes. Le plus dur est de relancer l'élan, pas de tout résoudre d'un coup." },
-            { keywords: ['cv', 'linkedin', 'entretien', 'stage'], reply: "Le module Simulation peut générer un CV et une roadmap, mais je peux aussi t'aider à formuler tes points forts ici." }
+            { keywords: ['stress', 'anxiete', 'angoisse', 'panique'], reply: "Respire 4 secondes, expire 6 secondes pendant 1 minute.\nEnsuite, choisis une seule action simple pour relancer la machine.\nSi tu veux, je peux te préparer un plan anti-stress de 10 minutes." },
+            { keywords: ['revision', 'cours', 'exam', 'examen', 'quiz'], reply: "Je peux te proposer un plan de révision ciblé.\nDonne-moi la matière, la date de l'examen et ton niveau actuel, et je te répondrai avec une méthode en 3 étapes." },
+            { keywords: ['orientation', 'metier', 'emploi', 'carriere'], reply: "Je peux t'aider à clarifier ton parcours.\nDécris ton domaine, ton objectif et les compétences que tu veux valoriser, puis je te proposerai une piste métier cohérente." },
+            { keywords: ['temps', 'organisation', 'planning', 'agenda'], reply: "On peut construire un planning hebdomadaire simple avec blocs de travail, pauses et révision espacée.\nDis-moi tes heures disponibles et je te le structure." },
+            { keywords: ['motivation', 'fatigue', 'baisse', 'decourage'], reply: "Commence par une tâche de 5 minutes.\nLe plus dur est de relancer l'élan, pas de tout résoudre d'un coup.\nJe peux aussi te proposer une routine de reprise très courte." },
+            { keywords: ['cv', 'linkedin', 'entretien', 'stage'], reply: "Le module Simulation peut générer un CV et une roadmap, mais je peux aussi t'aider ici à formuler tes points forts et ton pitch." }
         ];
 
         const matched = responses.find(item => item.keywords.some(keyword => message.includes(keyword)));
         if (matched) return matched.reply;
 
-        const questionHints = [
-            'Tu peux me demander un plan de révision, un conseil anti-stress, ou une aide d’orientation.',
-            'Si tu veux, décris ta difficulté en une phrase et je la transforme en action concrète.',
-            'Donne-moi un sujet précis: matière, échéance, ou objectif professionnel.'
-        ];
-        return questionHints[Math.floor(Math.random() * questionHints.length)];
+        return 'Tu peux me demander un plan de révision, un conseil anti-stress ou une aide d’orientation.\nSi tu veux, donne-moi une matière ou une échéance précise et je transforme ça en action concrète.';
     }
 
     function appendMentorExchange(userText, botText) {
@@ -5788,7 +5888,7 @@
         const history = getMentorHistory();
         const content = history.length ? history.map(item => `
             <div style="padding:10px; background:${item.sender === 'bot' ? 'var(--bg-secondary)' : '#eff6ff'}; border-radius:12px; margin-bottom:8px; text-align:left;">
-                <strong>${item.sender === 'bot' ? 'Mentor' : 'Vous'} :</strong> ${sanitizeMentorText(item.text)}
+                <strong>${item.sender === 'bot' ? 'Mentor' : 'Vous'} :</strong> ${sanitizeMentorText(item.text).replace(/\n/g, '<br>')}
                 <div style="font-size:12px; color:var(--text-muted); margin-top:4px;">${new Date(item.timestamp).toLocaleString('fr-FR')}</div>
             </div>
         `).join('') : '<div style="color:var(--text-muted);">Aucun message enregistré.</div>';
