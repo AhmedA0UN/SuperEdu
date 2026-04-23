@@ -45,6 +45,20 @@ SuperEdu a pour objectif de proposer une experience numerique moderne pour renfo
 - [frontend](frontend): application React/Vite servant d enveloppe aux interfaces legacy.
 - [setup](setup): scripts d installation et guide de setup.
 
+### Architecture utilisee
+
+SuperEdu repose sur une architecture web en 3 couches, avec separation des responsabilites:
+
+- Couche presentation: frontend React/Vite + pages legacy statiques (UI et navigation).
+- Couche services: node-service Node.js (health, readiness, agregation de statut).
+- Couche metier/API: backend Laravel (logique applicative, endpoints API, acces donnees).
+
+Principes retenus:
+
+- Architecture modulaire par service pour faciliter maintenance et evolution.
+- Communication HTTP entre composants (frontend -> node-service/backend, node-service -> backend).
+- Compatibilite de deploiement: frontend statique sur GitHub Pages, backend et node-service sur un hebergement serveur.
+
 Guide de mise en route detaille: [setup/SETUP.md](setup/SETUP.md).
 
 ## Fonctionnalites
