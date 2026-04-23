@@ -8,6 +8,7 @@ Plateforme web educative orientee vers l apprentissage, la collaboration academi
 - [Etat du projet](#etat-du-projet)
 - [Public cible](#public-cible)
 - [Architecture](#architecture)
+- [Architecture detaillee](#architecture-detaillee)
 - [Fonctionnalites](#fonctionnalites)
 - [Apercu des pages](#apercu-des-pages)
 - [Captures d ecran](#captures-d-ecran)
@@ -60,6 +61,16 @@ Principes retenus:
 - Compatibilite de deploiement: frontend statique sur GitHub Pages, backend et node-service sur un hebergement serveur.
 
 Guide de mise en route detaille: [setup/SETUP.md](setup/SETUP.md).
+
+## Architecture detaillee
+
+Les diagrammes UML et comportementaux sont centralises dans [archi.md](archi.md):
+
+- Diagramme des cas d utilisation
+- Diagramme de classes
+- Diagramme d objets
+- Diagrammes comportementaux (sequence et activite)
+- Etude de cas (scenario de reference)
 
 ## Fonctionnalites
 
