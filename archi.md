@@ -8,6 +8,29 @@ Ce document regroupe les diagrammes demandes pour la plateforme SuperEdu:
 4. Comportementaux: Sequence et Activite
 5. Etude de cas (en fin de document)
 
+## Vue globale de l architecture
+
+```mermaid
+flowchart LR
+	U[Utilisateurs\nEtudiants - Enseignants - Admin] --> F[Frontend React/Vite]
+	F -->|HTTP API| N[Node Service\nhealth - ready - status]
+	F -->|HTTP API metier| B[Backend Laravel]
+	N -->|Sonde| B
+	B --> DB[(Base de donnees)]
+
+	GH[GitHub Pages] -. heberge .-> F
+	SRV[Serveur applicatif] -. heberge .-> N
+	SRV -. heberge .-> B
+```
+
+## Hypotheses et contraintes
+
+- Le frontend peut etre servi seul pour un affichage statique de base.
+- Les fonctions metier dependent de la disponibilite du backend Laravel.
+- Le node-service joue le role de passerelle de supervision (health, ready, status).
+- Le deploiement GitHub Pages concerne uniquement le frontend statique.
+- Les appels inter-services sont realises en HTTP avec gestion CORS.
+
 ## 1) Diagramme des cas d utilisation
 
 ```mermaid
@@ -217,3 +240,20 @@ sequenceDiagram
 - Disponibilite controlee avant usage metier.
 - Degradation maitrisee en cas de panne backend.
 - Visibilite operationnelle grace aux endpoints health/ready/status.
+
+## Matrice de tracabilite (cas d utilisation -> composants)
+
+| Cas d utilisation | Frontend | Node-service | Backend Laravel |
+|---|---|---|---|
+| Consulter les parcours | Oui | Optionnel (status) | Oui |
+| Suivre un module | Oui | Optionnel (status) | Oui |
+| Passer une evaluation | Oui | Non | Oui |
+| Consulter les conseils IA | Oui | Optionnel | Oui |
+| Publier du contenu | Oui | Non | Oui |
+| Suivre la progression | Oui | Optionnel | Oui |
+| Verifier la sante du systeme | Oui (dashboard) | Oui (principal) | Oui (sonde) |
+| Gerer utilisateurs et droits | Oui | Non | Oui |
+
+## Conclusion
+
+La modelisation montre une architecture decouplee et evolutive, dans laquelle le frontend reste deploiable de maniere statique, tandis que la logique metier et la supervision technique sont reparties entre backend Laravel et node-service.
