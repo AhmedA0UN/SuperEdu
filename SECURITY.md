@@ -10,17 +10,6 @@ Merci de nous aider à garder ce projet sûr. Cette page décrit comment signale
 
 Veuillez inclure dans votre signalement : une description claire du problème, les étapes de reproduction, les versions affectées, l'impact estimé et, si possible, un proof‑of‑concept (PoC). Indiquez également un moyen de vous contacter pour des questions de suivi.
 
-## Clé PGP (optionnel)
-
-```text
------BEGIN PGP PUBLIC KEY BLOCK-----
-(Insérez ici la clé PGP publique ou remplacez ce bloc par la vôtre)
------END PGP PUBLIC KEY BLOCK-----
-
-Empreinte (exemple) : 0123 4567 89AB CDEF 0123 4567 89AB CDEF 0123 45
-```
-
-Remplacez la clé/empreinte ci‑dessus par la clé réelle si vous souhaitez recevoir des rapports chiffrés.
 
 ## Processus de réponse
 
